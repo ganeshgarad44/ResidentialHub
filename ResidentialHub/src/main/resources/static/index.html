@@ -1,0 +1,1318 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<title>Residential Hub — Find Your Perfect Stay</title>
+	<style>
+		:root {
+			--primary: #2f6fed;
+			--primary-dark: #1e5dd8;
+			--text-main: #1f2b49;
+			--text-muted: #667085;
+			--bg-light: #f5f7fb;
+			--card-border: #e8ecf2;
+			--success-green: #2e7d32;
+		}
+
+		* {
+			margin: 0;
+			padding: 0;
+			box-sizing: border-box;
+		}
+
+		body {
+			font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+			background: var(--bg-light);
+			color: var(--text-main);
+		}
+
+		body.modal-open {
+			overflow: hidden;
+		}
+
+		header {
+			background: #fff;
+			box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+			position: sticky;
+			top: 0;
+			z-index: 100;
+		}
+
+		.nav-container {
+			max-width: 1200px;
+			margin: 0 auto;
+			padding: 16px 24px;
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+		}
+
+		.logo {
+			font-size: 20px;
+			font-weight: 700;
+			text-decoration: none;
+			color: var(--text-main);
+		}
+
+		.nav-actions {
+			display: flex;
+			align-items: center;
+			gap: 16px;
+		}
+
+		.admin-link {
+			font-size: 14px;
+			font-weight: 600;
+			color: var(--primary);
+			text-decoration: none;
+			padding: 8px 16px;
+			border: 1px solid var(--primary);
+			border-radius: 6px;
+		}
+
+		/* Auth Controls */
+		.auth-wrapper {
+			position: relative;
+		}
+
+		.login-trigger-btn {
+			font-size: 14px;
+			font-weight: 600;
+			background: #f0f3f7;
+			color: var(--text-main);
+			padding: 8px 16px;
+			border-radius: 6px;
+			border: none;
+			cursor: pointer;
+		}
+
+		.user-profile-badge {
+			background: var(--primary);
+			color: #fff;
+			width: 38px;
+			height: 38px;
+			border-radius: 50%;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			font-weight: 700;
+			font-size: 14px;
+			cursor: pointer;
+			border: none;
+		}
+
+		.profile-dropdown {
+			display: none;
+			position: absolute;
+			right: 0;
+			top: 46px;
+			background: #fff;
+			min-width: 180px;
+			box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+			border-radius: 8px;
+			border: 1px solid var(--card-border);
+			overflow: hidden;
+			z-index: 200;
+		}
+
+		.profile-dropdown.show {
+			display: block;
+		}
+
+		.profile-dropdown button {
+			width: 100%;
+			text-align: left;
+			padding: 12px 16px;
+			background: none;
+			border: none;
+			border-radius: 0;
+			color: var(--text-main);
+			font-size: 14px;
+			cursor: pointer;
+		}
+
+		.profile-dropdown button:hover {
+			background: #f5f7fb;
+		}
+
+		.profile-dropdown .logout-action {
+			color: #df2c2c;
+			border-top: 1px solid var(--card-border);
+		}
+
+		.hero {
+			background: linear-gradient(135deg, #1f2b49 0%, #2d3a5e 100%);
+			color: #fff;
+			padding: 60px 24px;
+			text-align: center;
+		}
+
+		.hero h1 {
+			font-size: 36px;
+			font-weight: 800;
+			margin-bottom: 12px;
+		}
+
+		.hero p {
+			color: #d6dde6;
+			margin-bottom: 30px;
+		}
+
+		.search-container {
+			background: #fff;
+			padding: 16px;
+			border-radius: 12px;
+			box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+			display: grid;
+			grid-template-columns: 1fr 1fr auto;
+			gap: 12px;
+			max-width: 700px;
+			margin: 0 auto;
+		}
+
+		.search-field {
+			display: flex;
+			flex-direction: column;
+			text-align: left;
+			padding: 4px 8px;
+		}
+
+		.search-field label {
+			font-size: 11px;
+			font-weight: 700;
+			color: var(--text-muted);
+			text-transform: uppercase;
+		}
+
+		.search-field input {
+			border: none;
+			outline: none;
+			font-size: 15px;
+			width: 100%;
+			color: var(--text-main);
+		}
+
+		.search-field:not(:last-child) {
+			border-right: 1px solid var(--card-border);
+		}
+
+		button {
+			padding: 12px 24px;
+			border-radius: 6px;
+			border: none;
+			cursor: pointer;
+			font-size: 14px;
+			font-weight: 600;
+			transition: all 0.2s;
+		}
+
+		button.primary {
+			background: var(--primary);
+			color: #fff;
+		}
+
+		button.primary:hover {
+			background: var(--primary-dark);
+		}
+
+		button.ghost {
+			background: #f0f3f7;
+			color: var(--text-main);
+		}
+
+		.main-container {
+			max-width: 1200px;
+			margin: 40px auto;
+			padding: 0 24px 60px;
+		}
+
+		.section-header {
+			margin-bottom: 24px;
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+		}
+
+		.message {
+			padding: 12px 16px;
+			border-radius: 8px;
+			margin-bottom: 24px;
+			font-size: 14px;
+		}
+
+		.success {
+			background: #e6f6ea;
+			color: #166534;
+			border-left: 4px solid #38a169;
+		}
+
+		.error {
+			background: #fff1f2;
+			color: #9f1239;
+			border-left: 4px solid #e53e3e;
+		}
+
+		.cards-grid {
+			display: grid;
+			grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+			gap: 24px;
+		}
+
+		.hostel-card {
+			background: #fff;
+			border: 1px solid var(--card-border);
+			border-radius: 12px;
+			overflow: hidden;
+			display: flex;
+			flex-direction: column;
+		}
+
+		.card-img-wrapper {
+			height: 180px;
+			background: #e2e8f0;
+			position: relative;
+		}
+
+		.card-img-wrapper img {
+			width: 100%;
+			height: 100%;
+			object-fit: cover;
+		}
+
+		.hostel-type-badge {
+			position: absolute;
+			top: 12px;
+			left: 12px;
+			background: rgba(0, 0, 0, 0.7);
+			color: #fff;
+			padding: 4px 8px;
+			border-radius: 4px;
+			font-size: 11px;
+			font-weight: 700;
+		}
+
+		.card-body {
+			padding: 20px;
+			flex-grow: 1;
+			display: flex;
+			flex-direction: column;
+		}
+
+		.card-title {
+			font-size: 18px;
+			margin-bottom: 8px;
+		}
+
+		.card-info-row {
+			display: flex;
+			justify-content: space-between;
+			padding: 6px 0;
+			border-top: 1px dashed var(--card-border);
+			font-size: 13px;
+		}
+
+		.card-action-wrapper {
+			margin-top: auto;
+			padding-top: 14px;
+		}
+
+		/* --- MULTI-STEP MODAL DESIGN --- */
+		.modal {
+			display: none;
+			position: fixed;
+			z-index: 1000;
+			left: 0;
+			top: 0;
+			width: 100%;
+			height: 100%;
+			background: rgba(17, 27, 57, 0.6);
+			backdrop-filter: blur(4px);
+			justify-content: center;
+			align-items: center;
+			padding: 20px;
+		}
+
+		.modal-content {
+			background: #fff;
+			border-radius: 12px;
+			width: 100%;
+			max-width: 750px;
+			display: flex;
+			flex-direction: column;
+			max-height: 90vh;
+		}
+
+		.modal-content form {
+			display: flex;
+			flex-direction: column;
+			overflow: hidden;
+			flex: 1;
+			min-height: 0;
+		}
+
+		#loginPane,
+		#createAccountPane {
+			flex-direction: column;
+			overflow: hidden;
+			flex: 1;
+			min-height: 0;
+		}
+
+		#loginPane {
+			display: flex;
+		}
+
+		#createAccountPane {
+			display: none;
+		}
+
+		#createAccountPane.active {
+			display: flex;
+		}
+
+		#loginPane.hidden {
+			display: none;
+		}
+
+		.modal-header {
+			padding: 20px 30px;
+			border-bottom: 1px solid var(--card-border);
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+		}
+
+		.modal-close {
+			font-size: 24px;
+			cursor: pointer;
+			color: var(--text-muted);
+		}
+
+		.modal-form-body {
+			padding: 24px 30px;
+			overflow-y: auto;
+			flex-grow: 1;
+		}
+
+		.form-step {
+			display: none;
+		}
+
+		.form-step.active {
+			display: block;
+		}
+
+		.form-grid {
+			display: grid;
+			grid-template-columns: 1fr 1fr;
+			gap: 16px;
+		}
+
+		.form-row {
+			display: flex;
+			flex-direction: column;
+			margin-bottom: 4px;
+		}
+
+		.form-row.full-width {
+			grid-column: 1 / -1;
+		}
+
+		.form-row label {
+			font-size: 13px;
+			font-weight: 600;
+			margin-bottom: 4px;
+		}
+
+		.form-row input,
+		.form-row select,
+		.form-row textarea {
+			padding: 10px;
+			border: 1px solid #d6dde6;
+			border-radius: 6px;
+			font-size: 14px;
+			color: var(--text-main);
+		}
+
+		.modal-footer {
+			padding: 20px 30px;
+			border-top: 1px solid var(--card-border);
+			display: flex;
+			justify-content: flex-end;
+			gap: 12px;
+			background: #fafbfc;
+			flex-shrink: 0;
+		}
+
+		.pref-inline-selector {
+			display: flex;
+			gap: 16px;
+			margin-bottom: 20px;
+			background: #f0f4f8;
+			padding: 12px;
+			border-radius: 8px;
+			align-items: flex-end;
+		}
+
+		.beds-layout-grid {
+			display: grid;
+			grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+			gap: 12px;
+			margin-top: 15px;
+		}
+
+		.bed-node-card {
+			border: 2px solid var(--card-border);
+			padding: 14px;
+			border-radius: 8px;
+			cursor: pointer;
+			transition: all 0.2s;
+			position: relative;
+			background: #fff;
+		}
+
+		.bed-node-card:hover {
+			border-color: var(--primary);
+			background: rgba(47, 111, 237, 0.02);
+		}
+
+		.bed-node-card.selected {
+			border-color: var(--primary);
+			background: rgba(47, 111, 237, 0.08);
+			box-shadow: 0 0 0 2px var(--primary);
+		}
+
+		.bed-node-card h4 {
+			font-size: 15px;
+			margin-bottom: 4px;
+			color: var(--text-main);
+		}
+
+		.bed-node-card p {
+			font-size: 12px;
+			color: var(--text-muted);
+			line-height: 1.4;
+		}
+
+		.bed-price-tag {
+			margin-top: 6px;
+			font-size: 13px;
+			font-weight: 700;
+			color: var(--success-green);
+		}
+
+		/* --- SIDE DASHBOARD DRAWERS --- */
+		.drawer-dimmer {
+			display: none;
+			position: fixed;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			background: rgba(0, 0, 0, 0.4);
+			z-index: 999;
+		}
+
+		.dashboard-panel {
+			position: fixed;
+			top: 0;
+			right: -460px;
+			width: 100%;
+			max-width: 460px;
+			height: 100%;
+			background: #fff;
+			box-shadow: -5px 0 25px rgba(0,0,0,0.15);
+			transition: right 0.3s ease;
+			z-index: 1000;
+			display: flex;
+			flex-direction: column;
+		}
+
+		.dashboard-panel.open {
+			right: 0;
+		}
+
+		.drawer-top {
+			padding: 24px;
+			border-bottom: 1px solid var(--card-border);
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			background: #1f2b49;
+			color: #fff;
+		}
+
+		.drawer-main {
+			padding: 24px;
+			overflow-y: auto;
+			flex-grow: 1;
+		}
+
+		.display-metric {
+			margin-bottom: 16px;
+			background: #f8fafc;
+			padding: 14px;
+			border-radius: 8px;
+			border: 1px solid var(--card-border);
+		}
+
+		.metric-label {
+			font-size: 11px;
+			text-transform: uppercase;
+			color: var(--text-muted);
+			font-weight: 700;
+			margin-bottom: 4px;
+		}
+
+		.metric-value {
+			font-size: 15px;
+			font-weight: 600;
+			color: var(--text-main);
+		}
+
+		@media (max-width: 768px) {
+			.search-container {
+				grid-template-columns: 1fr;
+			}
+
+			.form-grid {
+				grid-template-columns: 1fr;
+			}
+
+			.pref-inline-selector {
+				flex-direction: column;
+				align-items: stretch;
+			}
+		}
+	</style>
+</head>
+
+<body>
+	<header>
+		<div class="nav-container">
+			<a href="index.html" class="logo">🏢 Residential Hub</a>
+			<div class="nav-actions">
+				<a href="organisation.html" class="admin-link">Admin Console →</a>
+				<a href="dashboard.html" class="admin-link" id="dashboardNavLink" style="display: none;">My Dashboard</a>
+
+				<div class="auth-wrapper" id="identityWrapper">
+					<button class="login-trigger-btn" onclick="showLoginModal()">Sign In</button>
+				</div>
+			</div>
+		</div>
+	</header>
+
+	<div class="profile-dropdown" id="menuDropdown">
+		<button onclick="toggleDashboardPanel(true)">My Dashboard</button>
+		<button class="logout-action" onclick="terminateSession()">Sign Out</button>
+	</div>
+
+	<section class="hero">
+		<div class="hero-content">
+			<h1>Find Premium Student & Professional Hostels</h1>
+			<p>Explore choices from premium verified properties across top locations instantly.</p>
+			<form id="searchForm" class="search-container">
+				<div class="search-field">
+					<label>Select City</label>
+					<input id="cityInput" type="text" placeholder="e.g. Pune" />
+				</div>
+				<div class="search-field">
+					<label>Select Area</label>
+					<input id="areaInput" type="text" placeholder="e.g. Kothrud" />
+				</div>
+				<button class="primary" type="submit">Search Accommodations</button>
+			</form>
+		</div>
+	</section>
+
+	<div class="main-container">
+		<div id="msg"></div>
+		<div class="section-header">
+			<h2 id="viewTitle">Featured Accommodations</h2>
+			<button id="resetSearchBtn" class="ghost small" style="display: none;">View All Properties</button>
+		</div>
+		<div id="listingsContainer" class="cards-grid"></div>
+	</div>
+
+	<div id="loginModal" class="modal">
+		<div class="modal-content" style="max-width: 500px;">
+			<div class="modal-header">
+				<h3 id="loginModalTitle">Sign In</h3>
+				<span class="modal-close" onclick="hideLoginModal()">&times;</span>
+			</div>
+
+			<div id="loginPane">
+				<form id="directLoginForm">
+					<div class="modal-form-body">
+						<div class="form-row" style="margin-bottom: 14px;">
+							<label>Registered Email Address</label>
+							<input type="email" id="authEmail" required placeholder="name@domain.com" />
+						</div>
+						<div class="form-row">
+							<label>Mobile Number (your password)</label>
+							<input type="number" id="authMobile" required placeholder="10-digit mobile number" />
+						</div>
+						<p style="margin-top: 16px; font-size: 13px; color: var(--text-muted);">New here? <a href="#" id="showCreateAccount" style="color: var(--primary); font-weight: 600;">Create an account</a></p>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="ghost" onclick="hideLoginModal()">Cancel</button>
+						<button type="submit" class="primary">Sign In</button>
+					</div>
+				</form>
+			</div>
+
+			<div id="createAccountPane">
+				<form id="createAccountForm">
+					<div class="modal-form-body">
+						<div class="form-grid">
+							<div class="form-row"><label>Full Name</label><input id="caName" type="text" required /></div>
+							<div class="form-row"><label>Email Address</label><input id="caEmail" type="email" required /></div>
+							<div class="form-row"><label>Mobile Number (this will be your password)</label><input id="caMobile" type="number" required /></div>
+							<div class="form-row"><label>Date of Birth</label><input id="caDob" type="date" required /></div>
+							<div class="form-row">
+								<label>Gender</label>
+								<select id="caGender" required>
+									<option value="" disabled selected>Select</option>
+									<option value="Male">Male</option>
+									<option value="Female">Female</option>
+								</select>
+							</div>
+							<div class="form-row"><label>Aadhaar Number</label><input id="caAdhar" type="number" required /></div>
+							<div class="form-row"><label>Education</label><input id="caEducation" type="text" required /></div>
+							<div class="form-row"><label>Profession</label><input id="caProfession" type="text" required /></div>
+							<div class="form-row">
+								<label>Marital Status</label>
+								<select id="caMarried" required>
+									<option value="" disabled selected>Select</option>
+									<option value="Single">Single</option>
+									<option value="Married">Married</option>
+								</select>
+							</div>
+							<div class="form-row"><label>Parent Name</label><input id="caParentName" type="text" required /></div>
+							<div class="form-row"><label>Parent Mobile</label><input id="caParentMobile" type="number" required /></div>
+							<div class="form-row full-width"><label>Current Address</label><textarea id="caCurrentAddress" rows="2" required></textarea></div>
+							<div class="form-row full-width"><label>Permanent Address</label><textarea id="caPermanentAddress" rows="2" required></textarea></div>
+						</div>
+						<p style="margin-top: 16px; font-size: 13px; color: var(--text-muted);">Already have an account? <a href="#" id="showSignIn" style="color: var(--primary); font-weight: 600;">Sign in</a></p>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="ghost" onclick="hideLoginModal()">Cancel</button>
+						<button type="submit" class="primary">Create Account</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+
+	<div id="bookingModal" class="modal">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h3 id="bookingModalTitle">Confirm Booking</h3>
+				<span class="modal-close" id="closeModalBtn">&times;</span>
+			</div>
+
+			<form id="userRegistrationForm">
+				<div class="modal-form-body">
+
+					<div id="stepPersonal" class="form-step active">
+						<div class="form-grid">
+							<div class="form-row"><label>Full Name</label><input id="userName" type="text" required /></div>
+							<div class="form-row"><label>Email Address</label><input id="userEmail" type="email" required /></div>
+							<div class="form-row"><label>Mobile Number</label><input id="userMobile" type="number" required /></div>
+							<div class="form-row"><label>Date of Birth</label><input id="userDob" type="date" required /></div>
+							<div class="form-row">
+								<label>Gender</label>
+								<select id="userGender" required>
+									<option value="" disabled selected>Select</option>
+									<option value="Male">Male</option>
+									<option value="Female">Female</option>
+								</select>
+							</div>
+							<div class="form-row"><label>Aadhaar Number</label><input id="userAdhar" type="number" required /></div>
+							<div class="form-row"><label>Education</label><input id="userEducation" type="text" required /></div>
+							<div class="form-row"><label>Profession</label><input id="userProfession" type="text" required /></div>
+							<div class="form-row">
+								<label>Marital Status</label>
+								<select id="userMarried" required>
+									<option value="" disabled selected>Select</option>
+									<option value="Single">Single</option>
+									<option value="Married">Married</option>
+								</select>
+							</div>
+							<div class="form-row"><label>Parent Name</label><input id="parentName" type="text" required /></div>
+							<div class="form-row"><label>Parent Mobile</label><input id="parentMobile" type="number" required /></div>
+							<div class="form-row full-width"><label>Current Address</label><textarea id="currentAddress" required></textarea></div>
+							<div class="form-row full-width"><label>Permanent Address</label><textarea id="permanentAddress" required></textarea></div>
+						</div>
+					</div>
+
+					<div id="stepBeds" class="form-step">
+						<p style="margin-bottom: 14px; font-size: 14px; color: var(--text-muted);">Configure room options below to see empty beds currently configured inside this location matrix.</p>
+
+						<div class="pref-inline-selector">
+							<div class="form-row" style="flex-grow: 1; margin-bottom: 0;">
+								<label>Sharing Preference</label>
+								<select id="sharingFilter">
+									<option value="1">1 Single Sharing</option>
+									<option value="2" selected>2 Double Sharing</option>
+									<option value="3">3 Triple Sharing</option>
+									<option value="4">4 Four Sharing</option>
+								</select>
+							</div>
+							<button type="button" class="primary" id="fetchBedsBtn" style="padding: 10px 20px;">Check Vacant Beds</button>
+						</div>
+
+						<div id="bedsFeedbackMsg"></div>
+
+						<div id="availableBedsContainer" class="beds-layout-grid">
+							<p style="grid-column: 1/-1; text-align: center; color: var(--text-muted); padding: 20px;">Select your sharing preferences above to display live beds.</p>
+						</div>
+					</div>
+
+				</div>
+
+				<div class="modal-footer">
+					<button type="button" class="ghost" id="cancelFormBtn">Cancel</button>
+					<button type="button" class="ghost" id="backToPersonalBtn" style="display: none;">← Back</button>
+					<button id="submitFormBtn" class="primary" type="submit">Proceed to Choose Bed</button>
+				</div>
+			</form>
+		</div>
+	</div>
+
+	<div class="drawer-dimmer" id="drawerDimmer" onclick="toggleDashboardPanel(false)"></div>
+	<div class="dashboard-panel" id="dashboardPanel">
+		<div class="drawer-top">
+			<h3>User Management Profile</h3>
+			<span style="font-size: 24px; cursor: pointer;" onclick="toggleDashboardPanel(false)">&times;</span>
+		</div>
+		<div class="drawer-main" id="dashboardContentSlot"></div>
+	</div>
+
+	<script>
+		const baseUrl = window.location.origin || 'http://localhost:8080';
+
+		// Local memory tracking registers
+		let targetHostelScopeId = null;
+		let matchingBedTargetNo = null;
+		let selectedBedEntityId = null;
+		let activeWizardStep = 'personal';
+		let sessionProfileToken = null;
+
+		const listingsContainer = document.getElementById('listingsContainer');
+		const searchForm = document.getElementById('searchForm');
+		const bookingModal = document.getElementById('bookingModal');
+		const userRegistrationForm = document.getElementById('userRegistrationForm');
+		const viewTitle = document.getElementById('viewTitle');
+		const resetSearchBtn = document.getElementById('resetSearchBtn');
+		const submitFormBtn = document.getElementById('submitFormBtn');
+		const backToPersonalBtn = document.getElementById('backToPersonalBtn');
+		const cancelFormBtn = document.getElementById('cancelFormBtn');
+
+		const stepPersonal = document.getElementById('stepPersonal');
+		const stepBeds = document.getElementById('stepBeds');
+		const availableBedsContainer = document.getElementById('availableBedsContainer');
+		const fetchBedsBtn = document.getElementById('fetchBedsBtn');
+
+		function displayNotification(text, type = 'success') {
+			document.getElementById('msg').innerHTML = `<div class="message ${type}">${type === 'success' ? '✅' : '❌'} ${text}</div>`;
+			window.scrollTo({top: 0, behavior: 'smooth'});
+			setTimeout(() => {
+				const container = document.getElementById('msg');
+				if (container) container.innerHTML = '';
+			}, 6000);
+		}
+
+		let vacantBedCounts = {};
+
+		window.addEventListener('DOMContentLoaded', () => {
+			initializeSessionState();
+			loadMasterProperties();
+		});
+
+		async function fetchVacantBedCounts() {
+			vacantBedCounts = {};
+			try {
+				const sharingTypes = [1, 2, 3, 4];
+				const responses = await Promise.all(
+					sharingTypes.map(s => fetch(`${baseUrl}/bedss?status=Available&sharing=${s}`).then(r => r.ok ? r.json() : []).catch(() => []))
+				);
+				const allBeds = responses.flat();
+				for (const bed of allBeds) {
+					const name = bed.hostelName;
+					vacantBedCounts[name] = (vacantBedCounts[name] || 0) + 1;
+				}
+			} catch (e) { /* counts stay empty, cards still render */ }
+		}
+
+		async function loadMasterProperties() {
+			try {
+				await fetchVacantBedCounts();
+				const response = await fetch(`${baseUrl}/hostels`);
+				if (!response.ok) throw new Error("Connection parsed empty data stream");
+				const records = await response.json();
+				renderPropertiesList(records, "Available Accommodations");
+			} catch (err) {
+				listingsContainer.innerHTML = '<div style="grid-column:1/-1; text-align:center; padding:40px; color:var(--text-muted);"><p>Unable to bind data profiles. Check backend server hosting configurations.</p></div>';
+			}
+		}
+
+		function renderPropertiesList(list, titleText) {
+			viewTitle.textContent = titleText;
+			listingsContainer.innerHTML = '';
+			if (!list || list.length === 0) {
+				listingsContainer.innerHTML = '<div style="grid-column:1/-1; text-align:center; padding:40px; color:var(--text-muted);"><p>No accommodations match your search parameters.</p></div>';
+				return;
+			}
+
+			list.forEach(hostel => {
+				const card = document.createElement('div');
+				card.className = 'hostel-card';
+				const placeholderAsset = 'https://images.unsplash.com/photo-1555854877-bab0e564b8d5?auto=format&fit=cover&w=500&q=80';
+				const imageUrl = hostel.image && hostel.image.trim() !== '' ? hostel.image : placeholderAsset;
+				const vacant = vacantBedCounts[hostel.hostelName] || 0;
+				const vacantColor = vacant > 0 ? 'var(--success-green)' : '#e53e3e';
+
+				card.innerHTML = `
+					<div class="card-img-wrapper">
+						<img src="${imageUrl}" alt="${hostel.hostelName}" onerror="this.src='${placeholderAsset}'">
+						<span class="hostel-type-badge">${hostel.type}</span>
+					</div>
+					<div class="card-body">
+						<h3 class="card-title">${hostel.hostelName}</h3>
+						<div class="card-info-row"><span>Capacity:</span><strong>${hostel.capacity} Seats</strong></div>
+						<div class="card-info-row"><span>Vacant Beds:</span><strong style="color:${vacantColor}">${vacant} Available</strong></div>
+						<div class="card-info-row"><span>Contact Details:</span><strong>${hostel.contactNo}</strong></div>
+						<div class="card-action-wrapper">
+							<button type="button" class="primary" style="width: 100%" onclick="invokeBookingWorkflow(${hostel.id}, '${hostel.hostelName.replace(/'/g, "\\'")}')">Book This Hostel</button>
+						</div>
+					</div>
+				`;
+				listingsContainer.appendChild(card);
+			});
+		}
+
+		searchForm.addEventListener('submit', async (e) => {
+			e.preventDefault();
+			const city = document.getElementById('cityInput').value.trim();
+			const area = document.getElementById('areaInput').value.trim();
+			
+			if(!city && !area) {
+				loadMasterProperties();
+				return;
+			}
+
+			try {
+				let queryPath = `${baseUrl}/address?`;
+				if (city) queryPath += `city=${encodeURIComponent(city)}`;
+				if (area) queryPath += city ? `&area=${encodeURIComponent(area)}` : `area=${encodeURIComponent(area)}`;
+
+				const res = await fetch(queryPath);
+				if (!res.ok) throw new Error();
+				
+				const filteredRecords = await res.json();
+				renderPropertiesList(filteredRecords, `Stays located within ${city || ''} ${area || ''}`);
+				resetSearchBtn.style.display = 'inline-block';
+			} catch (err) {
+				displayNotification('No matching properties located across specified parameters.', 'error');
+			}
+		});
+
+		resetSearchBtn.addEventListener('click', () => {
+			searchForm.reset();
+			loadMasterProperties();
+			resetSearchBtn.style.display = 'none';
+		});
+
+		window.invokeBookingWorkflow = function (hostelId, hostelName) {
+			targetHostelScopeId = hostelId;
+			bookingModal.style.display = 'flex';
+			document.body.classList.add('modal-open');
+			document.getElementById('bookingModalTitle').textContent = `Book Stay at: ${hostelName}`;
+			
+			if (sessionProfileToken) {
+				document.getElementById('userName').value = sessionProfileToken.name || '';
+				document.getElementById('userEmail').value = sessionProfileToken.email || '';
+				document.getElementById('userMobile').value = sessionProfileToken.mobileNo || '';
+				document.getElementById('userDob').value = sessionProfileToken.dateOfBirth || '';
+				document.getElementById('userGender').value = sessionProfileToken.gender || '';
+				document.getElementById('userAdhar').value = sessionProfileToken.adharNo || '';
+				document.getElementById('userEducation').value = sessionProfileToken.education || '';
+				document.getElementById('userProfession').value = sessionProfileToken.profession || '';
+				document.getElementById('userMarried').value = sessionProfileToken.married || '';
+				document.getElementById('parentName').value = sessionProfileToken.parentName || '';
+				document.getElementById('parentMobile').value = sessionProfileToken.parentMobileNo || '';
+				document.getElementById('currentAddress').value = sessionProfileToken.currentAddress || '';
+				document.getElementById('permanentAddress').value = sessionProfileToken.permanantAddress || '';
+			}
+			
+			alterWizardView('personal');
+		};
+
+		function dismissBookingModal() {
+			userRegistrationForm.reset();
+			bookingModal.style.display = 'none';
+			document.body.classList.remove('modal-open');
+			targetHostelScopeId = null;
+			matchingBedTargetNo = null;
+			selectedBedEntityId = null;
+		}
+
+		document.getElementById('closeModalBtn').addEventListener('click', dismissBookingModal);
+		cancelFormBtn.addEventListener('click', dismissBookingModal);
+
+		function alterWizardView(targetStep) {
+			if (targetStep === 'personal') {
+				activeWizardStep = 'personal';
+				stepPersonal.classList.add('active');
+				stepBeds.classList.remove('active');
+				backToPersonalBtn.style.display = 'none';
+				cancelFormBtn.style.display = 'inline-block';
+				submitFormBtn.textContent = 'Proceed to Choose Bed';
+			} else if (targetStep === 'beds') {
+				activeWizardStep = 'beds';
+				stepPersonal.classList.remove('active');
+				stepBeds.classList.add('active');
+				backToPersonalBtn.style.display = 'inline-block';
+				cancelFormBtn.style.display = 'none';
+				submitFormBtn.textContent = 'Confirm & Finalize Booking';
+				pullVacantBedsMatrix();
+			}
+		}
+
+		backToPersonalBtn.addEventListener('click', () => alterWizardView('personal'));
+
+		async function pullVacantBedsMatrix() {
+			const sharingValue = document.getElementById('sharingFilter').value;
+			availableBedsContainer.innerHTML = '<p style="grid-column:1/-1; text-align:center;">Checking bed schema vacancy states...</p>';
+			matchingBedTargetNo = null;
+			selectedBedEntityId = null;
+
+			try {
+				// Requests using your specified schema endpoint parameters
+				const response = await fetch(`${baseUrl}/bedss?status=Available&sharing=${sharingValue}&hostelId=${targetHostelScopeId}`);
+				if (!response.ok) throw new Error();
+
+				const operationalData = await response.json();
+				availableBedsContainer.innerHTML = '';
+
+				if (operationalData.length === 0) {
+					availableBedsContainer.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: #e53e3e; padding: 15px;">No vacant beds match this preference profile inside this hostel.</p>';
+					return;
+				}
+
+				operationalData.forEach(bed => {
+					const node = document.createElement('div');
+					node.className = 'bed-node-card';
+					node.innerHTML = `
+						<h4>Bed No: ${bed.bedNo}</h4>
+						<p>Building: ${bed.buildingName}</p>
+						<p>Floor ${bed.floorNo} | Room ${bed.roomNo}</p>
+						<div class="bed-price-tag">₹${bed.price}/mo</div>
+					`;
+					node.addEventListener('click', () => {
+						document.querySelectorAll('.bed-node-card').forEach(c => c.classList.remove('selected'));
+						node.classList.add('selected');
+						matchingBedTargetNo = bed.bedNo;
+						selectedBedEntityId = bed.id;
+					});
+					availableBedsContainer.appendChild(node);
+				});
+
+			} catch (err) {
+				availableBedsContainer.innerHTML = `<p style="grid-column:1/-1; text-align:center; color:var(--text-muted);">Error fetching structural data.</p>`;
+			}
+		}
+
+		fetchBedsBtn.addEventListener('click', pullVacantBedsMatrix);
+
+		userRegistrationForm.addEventListener('submit', async (e) => {
+			e.preventDefault();
+
+			if (activeWizardStep === 'personal') {
+				alterWizardView('beds');
+				return;
+			}
+
+			if (!selectedBedEntityId) {
+				alert("Please select an available bed option to finalize booking.");
+				return;
+			}
+
+			submitFormBtn.disabled = true;
+			submitFormBtn.textContent = 'Processing Application...';
+
+			try {
+				let userId = null;
+
+				if (sessionProfileToken && sessionProfileToken.userId) {
+					userId = sessionProfileToken.userId;
+				} else {
+					const signupPayload = {
+						name: document.getElementById('userName').value.trim(),
+						currentAddress: document.getElementById('currentAddress').value.trim(),
+						permanantAddress: document.getElementById('permanentAddress').value.trim(),
+						dateOfBirth: document.getElementById('userDob').value || null,
+						email: document.getElementById('userEmail').value.trim(),
+						mobileNo: parseInt(document.getElementById('userMobile').value, 10) || 0,
+						education: document.getElementById('userEducation').value.trim(),
+						adharNo: parseInt(document.getElementById('userAdhar').value, 10) || 0,
+						parentName: document.getElementById('parentName').value.trim(),
+						parentMobileNo: parseInt(document.getElementById('parentMobile').value, 10) || 0,
+						gender: document.getElementById('userGender').value,
+						profession: document.getElementById('userProfession').value.trim(),
+						married: document.getElementById('userMarried').value || null
+					};
+
+					const signupRes = await fetch(`${baseUrl}/signup`, {
+						method: 'POST',
+						headers: {'Content-Type': 'application/json'},
+						body: JSON.stringify(signupPayload)
+					});
+
+					if (!signupRes.ok) {
+						const errText = await signupRes.text();
+						displayNotification(errText || 'Failed to create account.', 'error');
+						return;
+					}
+
+					const createdUser = await signupRes.json();
+					userId = createdUser.userId;
+					sessionProfileToken = createdUser;
+					localStorage.setItem('currentUser', JSON.stringify(createdUser));
+					refreshIdentityNode();
+				}
+
+				const bookingRes = await fetch(`${baseUrl}/booking`, {
+					method: 'POST',
+					headers: {'Content-Type': 'application/json'},
+					body: JSON.stringify({ bedId: selectedBedEntityId, userId: userId })
+				});
+
+				const bookingFeedback = await bookingRes.text();
+
+				if (bookingRes.ok && bookingFeedback === 'Booking Saved') {
+					dismissBookingModal();
+					window.location.href = 'dashboard.html';
+				} else {
+					displayNotification(bookingFeedback || 'Booking failed.', 'error');
+				}
+			} catch (error) {
+				displayNotification(`Network failure during processing: ${error.message}`, 'error');
+			} finally {
+				submitFormBtn.disabled = false;
+				submitFormBtn.textContent = 'Confirm & Finalize Booking';
+			}
+		});
+
+		/* --- PROFILE AUTH AND EXTENDED PANEL DRAWER ENGINE --- */
+		
+		function showLoginModal() {
+			switchLoginPane('login');
+			document.getElementById('loginModal').style.display = 'flex';
+		}
+
+		function hideLoginModal() {
+			document.getElementById('directLoginForm').reset();
+			document.getElementById('createAccountForm').reset();
+			document.getElementById('loginModal').style.display = 'none';
+		}
+
+		function switchLoginPane(mode) {
+			if (mode === 'create') {
+				document.getElementById('loginPane').classList.add('hidden');
+				document.getElementById('createAccountPane').classList.add('active');
+				document.getElementById('loginModalTitle').textContent = 'Create Account';
+			} else {
+				document.getElementById('createAccountPane').classList.remove('active');
+				document.getElementById('loginPane').classList.remove('hidden');
+				document.getElementById('loginModalTitle').textContent = 'Sign In';
+			}
+		}
+
+		document.getElementById('showCreateAccount').addEventListener('click', (e) => {
+			e.preventDefault();
+			switchLoginPane('create');
+		});
+
+		document.getElementById('showSignIn').addEventListener('click', (e) => {
+			e.preventDefault();
+			switchLoginPane('login');
+		});
+
+		document.getElementById('createAccountForm').addEventListener('submit', async (e) => {
+			e.preventDefault();
+			const payload = {
+				name: document.getElementById('caName').value.trim(),
+				currentAddress: document.getElementById('caCurrentAddress').value.trim(),
+				permanantAddress: document.getElementById('caPermanentAddress').value.trim(),
+				dateOfBirth: document.getElementById('caDob').value || null,
+				email: document.getElementById('caEmail').value.trim(),
+				mobileNo: parseInt(document.getElementById('caMobile').value, 10) || 0,
+				education: document.getElementById('caEducation').value.trim(),
+				adharNo: parseInt(document.getElementById('caAdhar').value, 10) || 0,
+				parentName: document.getElementById('caParentName').value.trim(),
+				parentMobileNo: parseInt(document.getElementById('caParentMobile').value, 10) || 0,
+				gender: document.getElementById('caGender').value,
+				profession: document.getElementById('caProfession').value.trim(),
+				married: document.getElementById('caMarried').value || null
+			};
+
+			try {
+				const res = await fetch(`${baseUrl}/signup`, {
+					method: 'POST',
+					headers: {'Content-Type': 'application/json'},
+					body: JSON.stringify(payload)
+				});
+
+				if (!res.ok) {
+					const errText = await res.text();
+					alert(errText || 'Registration failed.');
+					return;
+				}
+
+				const createdUser = await res.json();
+				sessionProfileToken = createdUser;
+				localStorage.setItem('currentUser', JSON.stringify(createdUser));
+				refreshIdentityNode();
+				hideLoginModal();
+				displayNotification(`Welcome, ${createdUser.name}! Your account has been created.`);
+			} catch (err) {
+				alert('Network error during registration.');
+			}
+		});
+
+		document.getElementById('directLoginForm').addEventListener('submit', async (e) => {
+			e.preventDefault();
+			const targetedEmail = document.getElementById('authEmail').value.trim();
+			const targetedMobile = document.getElementById('authMobile').value.trim();
+
+			try {
+				const response = await fetch(`${baseUrl}/users`); 
+				if(!response.ok) throw new Error();
+				
+				const systemProfiles = await response.json();
+				let authenticatedUserRecord = null;
+
+				for(let i = 0; i < systemProfiles.length; i++) {
+					if(systemProfiles[i].email === targetedEmail && String(systemProfiles[i].mobileNo) === targetedMobile) {
+						authenticatedUserRecord = systemProfiles[i];
+						break;
+					}
+				}
+
+				if (authenticatedUserRecord) {
+					sessionProfileToken = authenticatedUserRecord;
+					localStorage.setItem('currentUser', JSON.stringify(authenticatedUserRecord));
+					refreshIdentityNode();
+					hideLoginModal();
+					displayNotification(`Welcome back, ${authenticatedUserRecord.name}!`);
+				} else {
+					alert("Identity verification mismatch. Confirm information inputs.");
+				}
+			} catch(err) {
+				alert("Failure updating authorization handshake.");
+			}
+		});
+
+		function initializeSessionState() {
+			let activeCacheData = localStorage.getItem('currentUser');
+			if (!activeCacheData) {
+				activeCacheData = localStorage.getItem('user_auth_token');
+				if (activeCacheData) {
+					localStorage.setItem('currentUser', activeCacheData);
+					localStorage.removeItem('currentUser');
+				}
+			}
+			if (activeCacheData) {
+				try {
+					sessionProfileToken = JSON.parse(activeCacheData);
+					refreshIdentityNode();
+				} catch(e) {
+					localStorage.removeItem('currentUser');
+				}
+			}
+		}
+
+		function refreshIdentityNode() {
+			const container = document.getElementById('identityWrapper');
+			const dashLink = document.getElementById('dashboardNavLink');
+			if (!container) return;
+
+			if (sessionProfileToken) {
+				const letterIndex = sessionProfileToken.name ? sessionProfileToken.name.charAt(0).toUpperCase() : 'U';
+				container.innerHTML = `<button class="user-profile-badge" id="badgeTrigger" type="button">${letterIndex}</button>`;
+				if (dashLink) dashLink.style.display = 'inline-block';
+
+				document.getElementById('badgeTrigger').addEventListener('click', (e) => {
+					e.stopPropagation();
+					document.getElementById('menuDropdown').classList.toggle('show');
+				});
+			} else {
+				container.innerHTML = `<button class="login-trigger-btn" onclick="showLoginModal()">Sign In</button>`;
+				if (dashLink) dashLink.style.display = 'none';
+			}
+		}
+
+		window.addEventListener('click', () => {
+			const panelMenu = document.getElementById('menuDropdown');
+			if (panelMenu) panelMenu.classList.remove('show');
+		});
+
+		function terminateSession() {
+			sessionProfileToken = null;
+			localStorage.removeItem('currentUser');
+			refreshIdentityNode();
+			toggleDashboardPanel(false);
+			displayNotification("Session context deleted cleanly.");
+		}
+
+		function toggleDashboardPanel(shouldOpen) {
+			const panel = document.getElementById('dashboardPanel');
+			const overlay = document.getElementById('drawerDimmer');
+			
+			if (shouldOpen) {
+				if (!sessionProfileToken) return;
+				
+				document.getElementById('dashboardContentSlot').innerHTML = `
+					<div class="display-metric">
+						<div class="metric-label">Full Name</div>
+						<div class="metric-value">${sessionProfileToken.name || 'N/A'}</div>
+					</div>
+					<div class="display-metric">
+						<div class="metric-label">Email Address</div>
+						<div class="metric-value">${sessionProfileToken.email || 'N/A'}</div>
+					</div>
+					<div class="display-metric">
+						<div class="metric-label">Mobile Reference</div>
+						<div class="metric-value">${sessionProfileToken.mobileNo || 'N/A'}</div>
+					</div>
+					<div class="display-metric">
+						<div class="metric-label">Assigned Room Mapping Space</div>
+						<div class="metric-value" style="color:var(--primary)">Bed ID: ${sessionProfileToken.targetBedNo || 'Active Registration Assessment Pending'}</div>
+					</div>
+					<div class="display-metric">
+						<div class="metric-label">Education</div>
+						<div class="metric-value">${sessionProfileToken.education || 'N/A'}</div>
+					</div>
+					<div class="display-metric">
+						<div class="metric-label">Current Location Address</div>
+						<div class="metric-value" style="font-size:13px; font-weight:normal;">${sessionProfileToken.currentAddress || 'N/A'}</div>
+					</div>
+				`;
+				
+				overlay.style.display = 'block';
+				panel.classList.add('open');
+				document.body.classList.add('modal-open');
+			} else {
+				overlay.style.display = 'none';
+				panel.classList.remove('open');
+				document.body.classList.remove('modal-open');
+			}
+		}
+	</script>
+</body>
+
+</html>

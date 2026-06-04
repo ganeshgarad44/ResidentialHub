@@ -1,0 +1,1088 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<title>Residential Hub — Beds List</title>
+	<style>
+		* {
+			margin: 0;
+			padding: 0;
+			box-sizing: border-box;
+		}
+
+		body {
+			font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+			display: flex;
+			min-height: 100vh;
+			background: #f5f7fb;
+			color: #111;
+			overflow-x: hidden;
+		}
+
+		.sidebar {
+			width: 260px;
+			background: linear-gradient(180deg, #1f2b49 0%, #2d3a5e 100%);
+			color: #fff;
+			display: flex;
+			flex-direction: column;
+			padding: 0;
+			box-shadow: 4px 0 20px rgba(0, 0, 0, 0.1);
+			position: fixed;
+			height: 100vh;
+			left: 0;
+			top: 0;
+			z-index: 100;
+		}
+
+		.project-title {
+			font-size: 22px;
+			font-weight: 700;
+			padding: 28px 24px;
+			border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+			background: rgba(0, 0, 0, 0.15);
+			letter-spacing: 0.5px;
+		}
+
+		.nav-list {
+			list-style: none;
+			padding: 16px 0;
+			margin: 0;
+			flex-grow: 1;
+		}
+
+		.nav-list-item a {
+			display: flex;
+			align-items: center;
+			gap: 12px;
+			padding: 14px 24px;
+			text-decoration: none;
+			color: #d6dde6;
+			transition: all 0.2s;
+			font-size: 15px;
+			border-left: 3px solid transparent;
+		}
+
+		.nav-list-item a:hover {
+			background: rgba(47, 111, 237, 0.15);
+			color: #fff;
+			border-left-color: #2f6fed;
+		}
+
+		.nav-list-item.active a {
+			background: rgba(47, 111, 237, 0.25);
+			color: #fff;
+			font-weight: 600;
+			border-left-color: #2f6fed;
+		}
+
+		.user-profile {
+			padding: 20px 24px;
+			border-top: 1px solid rgba(255, 255, 255, 0.1);
+			background: rgba(0, 0, 0, 0.15);
+			display: flex;
+			align-items: center;
+			gap: 12px;
+			margin-top: auto;
+		}
+
+		.user-profile-icon {
+			width: 42px;
+			height: 42px;
+			border-radius: 50%;
+			background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+			color: #fff;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			font-size: 18px;
+			cursor: pointer;
+			flex-shrink: 0;
+		}
+
+		.user-profile-text {
+			flex-grow: 1;
+		}
+
+		.user-profile-text p {
+			margin: 0;
+			font-size: 14px;
+			color: #d6dde6;
+			font-weight: 500;
+		}
+
+		.user-profile-text .muted-profile {
+			font-size: 12px;
+			color: #8892a6;
+		}
+
+		.main-content {
+			margin-left: 260px;
+			flex-grow: 1;
+			padding: 32px;
+			max-width: calc(100vw - 260px);
+			overflow-y: auto;
+			height: 100vh;
+		}
+
+		.main-container {
+			max-width: 1400px;
+			margin: 0 auto;
+			padding: 36px;
+			background: #fff;
+			border-radius: 12px;
+			box-shadow: 0 4px 20px rgba(18, 38, 63, 0.08);
+		}
+
+		h1 {
+			margin: 0 0 16px;
+			font-size: 18px;
+			color: #1f2b49;
+			font-weight: 600;
+			padding-bottom: 10px;
+			border-bottom: 1px solid #e8ecf2;
+		}
+
+		#roomHeader {
+			background: linear-gradient(135deg, #f3e8ff 0%, #e9d5ff 100%);
+			padding: 10px 14px;
+			border-radius: 6px;
+			margin-bottom: 20px;
+			font-weight: 500;
+			font-size: 13px;
+			color: #1f2b49;
+			border-left: 3px solid #6b21a8;
+		}
+
+		#roomHeader a {
+			color: #6b21a8;
+			text-decoration: none;
+			font-weight: 600;
+		}
+
+		h2 {
+			margin: 24px 0 12px;
+			font-size: 16px;
+			color: #1f2b49;
+			font-weight: 600;
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			padding-bottom: 8px;
+			border-bottom: 1px solid #f0f3f7;
+		}
+
+		.section-divider {
+			border: 0;
+			border-top: 1px solid #e8ecf2;
+			margin: 20px 0;
+		}
+
+		button {
+			padding: 8px 16px;
+			border-radius: 6px;
+			border: none;
+			cursor: pointer;
+			font-size: 14px;
+			font-weight: 600;
+			transition: all 0.2s;
+			font-family: inherit;
+			white-space: nowrap;
+		}
+
+		button.primary {
+			background: linear-gradient(135deg, #2f6fed 0%, #1e5dd8 100%);
+			color: #fff;
+			box-shadow: 0 2px 8px rgba(47, 111, 237, 0.3);
+		}
+
+		button.primary:hover {
+			transform: translateY(-1px);
+			box-shadow: 0 4px 12px rgba(47, 111, 237, 0.4);
+		}
+
+		button.ghost {
+			background: #f0f3f7;
+			color: #1f2b49;
+		}
+
+		button.ghost:hover {
+			background: #e2e8f0;
+		}
+
+		button.small {
+			font-size: 13px;
+			padding: 7px 14px;
+		}
+
+		.toolbar {
+			display: flex;
+			gap: 10px;
+			align-items: center;
+		}
+
+		.search-wrapper {
+			display: flex;
+			align-items: center;
+			gap: 6px;
+			padding: 7px 12px;
+			border: 1px solid #d6dde6;
+			border-radius: 6px;
+			background: #fff;
+			transition: all 0.2s;
+		}
+
+		.search-wrapper:focus-within {
+			border-color: #2f6fed;
+			box-shadow: 0 0 0 2px rgba(47, 111, 237, 0.1);
+		}
+
+		.search-wrapper input {
+			border: none;
+			outline: none;
+			padding: 0;
+			font-size: 13px;
+			width: 250px;
+			background: transparent;
+		}
+
+		.search-icon {
+			color: #8892a6;
+			font-size: 14px;
+		}
+
+		.message {
+			padding: 10px 14px;
+			border-radius: 6px;
+			margin-bottom: 16px;
+			font-size: 13px;
+			font-weight: 500;
+			animation: slideIn 0.3s ease;
+			display: flex;
+			align-items: center;
+			gap: 8px;
+		}
+
+		.success {
+			background: #e6f6ea;
+			color: #166534;
+			border-left: 4px solid #38a169;
+		}
+
+		.error {
+			background: #fff1f2;
+			color: #9f1239;
+			border-left: 4px solid #e53e3e;
+		}
+
+		@keyframes slideIn {
+			from {
+				opacity: 0;
+				transform: translateY(-10px);
+			}
+
+			to {
+				opacity: 1;
+				transform: translateY(0);
+			}
+		}
+
+		/* --- Bed Cards Grid --- */
+		#bedsCardsContainer {
+			display: grid;
+			grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+			gap: 16px;
+			margin-top: 16px;
+		}
+
+		.bed-card {
+			padding: 16px;
+			border: 1px solid #e8ecf2;
+			border-left: 3px solid #8b5cf6;
+			border-radius: 8px;
+			background: #fafbfc;
+			position: relative;
+			transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+		}
+
+		.bed-card:hover {
+			transform: translateY(-4px);
+			border-color: #8b5cf6;
+			background: #fff;
+			box-shadow: 0 8px 24px rgba(139, 92, 246, 0.15);
+		}
+
+		.bed-card.available {
+			border-left-color: #22c55e;
+		}
+
+		.bed-card.booked {
+			border-left-color: #ef4444;
+			background: #fef2f2;
+		}
+
+		.bed-card.available:hover {
+			border-color: #22c55e;
+			box-shadow: 0 8px 24px rgba(34, 197, 94, 0.15);
+		}
+
+		.bed-card.booked:hover {
+			border-color: #ef4444;
+			box-shadow: 0 8px 24px rgba(239, 68, 68, 0.15);
+		}
+
+		.card-header {
+			display: flex;
+			justify-content: space-between;
+			align-items: start;
+			margin-bottom: 12px;
+		}
+
+		.bed-card-icon {
+			width: 42px;
+			height: 42px;
+			border-radius: 8px;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			color: white;
+			font-size: 20px;
+			flex-shrink: 0;
+		}
+
+		.bed-card.available .bed-card-icon {
+			background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+		}
+
+		.bed-card.booked .bed-card-icon {
+			background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+		}
+
+		.delete-icon {
+			width: 26px;
+			height: 26px;
+			background: #fff;
+			border: 1px solid #fee;
+			border-radius: 6px;
+			color: #e53e3e;
+			font-weight: bold;
+			cursor: pointer;
+			font-size: 14px;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			padding: 0;
+			transition: all 0.2s;
+			z-index: 10;
+		}
+
+		.delete-icon:hover {
+			background: #fee;
+			border-color: #e53e3e;
+			transform: scale(1.1);
+		}
+
+		.card-title {
+			font-size: 16px;
+			font-weight: 600;
+			color: #1f2b49;
+			margin-bottom: 4px;
+		}
+
+		.card-subtitle {
+			font-size: 12px;
+			color: #667085;
+			margin-bottom: 12px;
+		}
+
+		.card-details {
+			display: flex;
+			flex-direction: column;
+			gap: 8px;
+		}
+
+		.detail-row {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			font-size: 13px;
+			padding: 6px 0;
+			border-bottom: 1px solid #f0f3f7;
+		}
+
+		.detail-row:last-child {
+			border-bottom: none;
+		}
+
+		.detail-label {
+			color: #667085;
+			font-weight: 500;
+		}
+
+		.detail-value {
+			color: #1f2b49;
+			font-weight: 600;
+		}
+
+		.status-badge {
+			display: inline-block;
+			padding: 4px 10px;
+			border-radius: 12px;
+			font-size: 12px;
+			font-weight: 600;
+		}
+
+		.status-available {
+			background: #dcfce7;
+			color: #166534;
+		}
+
+		.status-booked {
+			background: #fee2e2;
+			color: #991b1b;
+		}
+
+		.card-footer {
+			margin-top: 12px;
+			padding-top: 10px;
+			border-top: 1px solid #e8ecf2;
+			font-size: 11px;
+			color: #8892a6;
+			font-family: 'Courier New', monospace;
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+		}
+
+		.card-footer-ids {
+			display: flex;
+			gap: 15px;
+			/* Added spacing between IDs */
+		}
+
+		.muted {
+			color: #667085;
+			font-size: 13px;
+		}
+
+		.empty-state {
+			grid-column: 1 / -1;
+			padding: 40px 20px;
+			text-align: center;
+			background: #fafbfc;
+			border-radius: 8px;
+			border: 2px dashed #e2e8f0;
+		}
+
+		.empty-state-icon {
+			font-size: 48px;
+			margin-bottom: 12px;
+			opacity: 0.5;
+		}
+
+		.empty-state h3 {
+			font-size: 16px;
+			color: #2d3748;
+			margin-bottom: 6px;
+		}
+
+		.empty-state p {
+			color: #718096;
+			font-size: 13px;
+		}
+
+		/* --- Modal Styles --- */
+		.modal {
+			display: none;
+			position: fixed;
+			z-index: 1000;
+			left: 0;
+			top: 0;
+			width: 100%;
+			height: 100%;
+			overflow: auto;
+			background-color: rgba(0, 0, 0, 0.5);
+			justify-content: center;
+			align-items: center;
+		}
+
+		.modal-content {
+			background-color: #fefefe;
+			margin: auto;
+			padding: 30px;
+			border-radius: 12px;
+			width: 90%;
+			max-width: 450px;
+			box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+			position: relative;
+		}
+
+		.modal-content h3 {
+			margin-top: 0;
+			margin-bottom: 20px;
+			font-size: 18px;
+			border-bottom: 2px solid #e8ecf2;
+			padding-bottom: 12px;
+			color: #1f2b49;
+		}
+
+		.modal-close {
+			color: #aaa;
+			position: absolute;
+			top: 15px;
+			right: 20px;
+			font-size: 28px;
+			font-weight: bold;
+			text-decoration: none;
+			transition: color 0.2s;
+			cursor: pointer;
+		}
+
+		.modal-close:hover {
+			color: #e53e3e;
+		}
+
+		.form-row {
+			display: flex;
+			flex-direction: column;
+			align-items: flex-start;
+			margin-bottom: 16px;
+		}
+
+		.form-row label {
+			font-size: 14px;
+			color: #1f2b49;
+			font-weight: 500;
+			margin-bottom: 6px;
+		}
+
+		.form-row input,
+		.form-row select {
+			width: 100%;
+			padding: 8px 12px;
+			border: 1px solid #d6dde6;
+			border-radius: 6px;
+			font-size: 14px;
+			transition: all 0.2s;
+			background: #fff;
+			font-family: inherit;
+		}
+
+		.form-row input:focus,
+		.form-row select:focus {
+			outline: none;
+			border-color: #2f6fed;
+			box-shadow: 0 0 0 2px rgba(47, 111, 237, 0.1);
+		}
+
+		.form-row input[readonly] {
+			background: #f0f3f7;
+			color: #667085;
+			cursor: not-allowed;
+		}
+
+		.form-row select {
+			cursor: pointer;
+		}
+
+		.button-row {
+			display: flex;
+			gap: 10px;
+			margin-top: 20px;
+			justify-content: flex-end;
+		}
+
+		@media (max-width: 1024px) {
+			.sidebar {
+				width: 220px;
+			}
+
+			.main-content {
+				margin-left: 220px;
+				max-width: calc(100vw - 220px);
+			}
+		}
+
+		@media (max-width: 768px) {
+			.sidebar {
+				width: 70px;
+			}
+
+			.project-title,
+			.user-profile-text,
+			.nav-list-item a span:last-child {
+				display: none;
+			}
+
+			.nav-list-item a {
+				justify-content: center;
+				padding: 14px;
+			}
+
+			.user-profile {
+				justify-content: center;
+				padding: 16px;
+			}
+
+			.main-content {
+				margin-left: 70px;
+				max-width: calc(100vw - 70px);
+				padding: 16px;
+			}
+
+			.main-container {
+				padding: 24px;
+			}
+
+			h1 {
+				font-size: 16px;
+			}
+
+			h2 {
+				flex-direction: column;
+				align-items: flex-start;
+				gap: 12px;
+			}
+
+			.toolbar {
+				width: 100%;
+			}
+
+			.search-wrapper {
+				flex: 1;
+			}
+
+			.search-wrapper input {
+				width: 100%;
+			}
+
+			#bedsCardsContainer {
+				grid-template-columns: 1fr;
+			}
+		}
+	</style>
+</head>
+
+<body>
+	<div class="sidebar">
+		<div class="project-title">🏢 Hostel Management</div>
+		<ul class="nav-list">
+			<li class="nav-list-item">
+				<a href="organisation.html">
+					<span>🏛️</span>
+					<span>Organisation</span>
+				</a>
+			</li>
+			<li class="nav-list-item">
+				<a href="hostel.html">
+					<span>🏠</span>
+					<span>Hostels</span>
+				</a>
+			</li>
+			<li class="nav-list-item">
+				<a href="buildings.html">
+					<span>🏢</span>
+					<span>Buildings</span>
+				</a>
+			</li>
+			<li class="nav-list-item">
+				<a href="floors.html">
+					<span>📊</span>
+					<span>Floors</span>
+				</a>
+			</li>
+			<li class="nav-list-item ">
+				<a href="rooms.html">
+					<span>🛏️</span>
+					<span>Rooms</span>
+				</a>
+			</li>
+			<li class="nav-list-item active">
+				<a href="beds.html">
+					<span>🛌</span>
+					<span>Beds</span>
+				</a>
+			</li>
+		</ul>
+
+		<div class="user-profile">
+			<div class="user-profile-icon">👤</div>
+			<div class="user-profile-text">
+				<p>Admin User</p>
+				<p class="muted-profile">View Profile</p>
+			</div>
+		</div>
+	</div>
+
+	<div class="main-content">
+		<div class="main-container">
+			<h1>Bed Management</h1>
+
+			<div id="roomHeader"></div>
+
+			<div id="msg"></div>
+
+			<hr class="section-divider">
+
+			<h2>
+				<span id="listHeader">All Beds List</span>
+				<div class="toolbar">
+					<div class="search-wrapper">
+						<span class="search-icon">🔍</span>
+						<input id="searchInput" type="text" placeholder="Search by bed number or status..." />
+					</div>
+					<button id="addBedBtn" class="primary small" type="button">+ Add Bed</button>
+					<button id="refreshBtn" class="ghost small" type="button">Refresh</button>
+					<button id="viewAllBedsBtn" class="primary small" type="button" style="display: none;">View All
+						Beds</button>
+				</div>
+			</h2>
+
+			<div id="bedsCardsContainer">
+				<p class="muted">Loading beds...</p>
+			</div>
+		</div>
+	</div>
+
+	<div id="addBedModal" class="modal">
+		<div class="modal-content">
+			<span class="modal-close" id="closeAddBedModalBtn">&times;</span>
+			<h3 id="modalTitle">Add New Bed</h3>
+
+			<div id="capacityInfo"
+				style="background: #e0f2fe; padding: 10px; border-radius: 6px; margin-bottom: 16px; display: none;">
+				<p style="margin: 0; font-size: 13px; color: #075985; font-weight: 500;">
+					<span>📊 Note: Capacity is checked on the server when submitting.</span>
+				</p>
+			</div>
+
+			<form id="addBedForm">
+				<div class="form-row">
+					<label for="roomIdModal">Room ID:</label>
+					<input id="roomIdModal" type="number" placeholder="Enter Room ID" required />
+				</div>
+				<div class="form-row">
+					<label for="bedNoModal">Bed Number:</label>
+					<input id="bedNoModal" type="number" placeholder="Enter bed number (e.g., 1, 2)" required />
+				</div>
+				<div class="form-row">
+					<label for="sharingModal">Sharing:</label>
+					<select id="sharingModal" required>
+						<option value="" disabled selected>Select Sharing</option>
+						<option value="1">1-Sharing</option>
+						<option value="2">2-Sharing</option>
+						<option value="3">3-Sharing</option>
+						<option value="4">4-Sharing</option>
+						<option value="6">6-Sharing</option>
+					</select>
+				</div>
+				<div class="form-row">
+					<label for="priceModal">Monthly Price (₹):</label>
+					<input id="priceModal" type="number" placeholder="e.g., 5000" required />
+				</div>
+				<div class="form-row">
+					<label for="statusModal">Status:</label>
+					<select id="statusModal" required>
+						<option value="Available">Available</option>
+						<option value="Booked">Booked</option>
+					</select>
+				</div>
+				<div class="button-row">
+					<button type="button" class="ghost" id="cancelBedBtn">Cancel</button>
+					<button id="saveBedBtnModal" class="primary" type="submit">Add Bed</button>
+				</div>
+			</form>
+		</div>
+	</div>
+
+	<script>
+		// Configuration
+		const baseUrl = window.location.origin || 'http://localhost:8080';
+
+		// API Endpoints
+		const api = {
+			GET_ALL_BEDS: `${baseUrl}/beds?_t=${Date.now()}`,
+			POST_BED: `${baseUrl}/bed`,
+			DELETE_BED: (id) => `${baseUrl}/bed/${id}`,
+			// The /room-capacity/{id} endpoint is no longer needed in the frontend
+			// because we rely on the POST /bed endpoint's server-side exception handling.
+		};
+
+		// DOM Elements
+		const bedsCardsContainer = document.getElementById('bedsCardsContainer');
+		const listHeader = document.getElementById('listHeader');
+		const roomHeader = document.getElementById('roomHeader');
+		const viewAllBedsBtn = document.getElementById('viewAllBedsBtn');
+		const searchInput = document.getElementById('searchInput');
+		const addBedModal = document.getElementById('addBedModal');
+		const addBedForm = document.getElementById('addBedForm');
+		const capacityInfo = document.getElementById('capacityInfo'); // Retained for display purposes
+		const saveBtn = document.getElementById('saveBedBtnModal');
+
+		// State variables
+		let currentRoomId = null;
+		let currentRoomNo = null;
+		let allBedsData = [];
+
+		// --- Utility Functions ---
+
+		function getUrlParameter(name) {
+			const urlParams = new URLSearchParams(window.location.search);
+			return urlParams.get(name);
+		}
+
+		function showMessage(text, type = 'success') {
+			document.getElementById('msg').innerHTML = `<div class="message ${type}">${type === 'success' ? '✅' : '❌'} ${text}</div>`;
+			setTimeout(() => document.getElementById('msg').innerHTML = '', 4000);
+		}
+
+		// --- Initialization ---
+
+		function initializeBedsPage() {
+			// Get URL parameters passed from rooms.html
+			const rId = getUrlParameter('roomId');
+			const rNo = getUrlParameter('roomNo');
+
+			currentRoomId = rId ? parseInt(rId) : null;
+			currentRoomNo = rNo;
+
+			if (currentRoomId && currentRoomNo) {
+				listHeader.textContent = `Beds in Room ${currentRoomNo} (ID: ${currentRoomId})`;
+				roomHeader.innerHTML = `📍 Viewing beds for <strong>Room ${currentRoomNo}</strong> | <a href="rooms.html">Back to Rooms List</a>`;
+				viewAllBedsBtn.style.display = 'inline-block';
+				loadBeds(currentRoomId);
+			} else {
+				listHeader.textContent = 'All Beds in Hostel';
+				roomHeader.innerHTML = `📍 Viewing <strong>All Beds</strong> in the system.`;
+				viewAllBedsBtn.style.display = 'none';
+				loadBeds(null);
+			}
+		}
+
+		// --- Load Data ---
+		async function loadBeds(roomId) {
+			bedsCardsContainer.innerHTML = '<p class="muted">Fetching data...</p>';
+			try {
+				// Fetch all beds (Backend returns List<BedGetDto>)
+				const response = await fetch(api.GET_ALL_BEDS);
+
+				if (!response.ok) {
+					// Read the error body if available
+					const errorBody = await response.text();
+					throw new Error(`HTTP ${response.status}: Failed to fetch beds. Response: ${errorBody}`);
+				}
+
+				const allBeds = await response.json();
+
+				// Filter using the flat 'roomId' field from BedGetDto
+				allBedsData = roomId
+					? allBeds.filter(b => b.roomId === roomId)
+					: allBeds;
+
+				renderBedsCards(allBedsData);
+
+			} catch (error) {
+				bedsCardsContainer.innerHTML = `
+                <div class="empty-state">
+                    <div class="empty-state-icon">⚠️</div>
+                    <h3>Connection Error</h3>
+                    <p>Could not load beds: ${error.message}</p>
+                </div>
+            `;
+				showMessage('Failed to load beds: ' + error.message, 'error');
+				console.error('Bed Load Error:', error);
+			}
+		}
+
+		// --- Render UI ---
+		function renderBedsCards(beds) {
+			bedsCardsContainer.innerHTML = '';
+
+			const q = (searchInput.value || '').toLowerCase();
+			const filteredBeds = beds.filter(b => !q ||
+				String(b.bedNo).includes(q) ||
+				String(b.id).includes(q) ||
+				(b.status && b.status.toLowerCase().includes(q)) ||
+				String(b.roomId).includes(q)
+			);
+
+			if (filteredBeds.length === 0) {
+				bedsCardsContainer.innerHTML = `
+                <div class="empty-state">
+                    <div class="empty-state-icon">🛌</div>
+                    <h3>${q ? 'No matches found' : 'No beds found'}</h3>
+                    <p>${q ? 'Try a different search term' : 'Add beds to get started'}</p>
+                </div>
+            `;
+				return;
+			}
+
+			filteredBeds.forEach(bed => {
+				const card = document.createElement('div');
+
+				const roomDisplay = (currentRoomNo && bed.roomId === currentRoomId)
+					? `Room ${currentRoomNo}`
+					: `Room ID: ${bed.roomId}`;
+
+				const statusClass = bed.status === 'Available' ? 'available' : 'booked';
+				const statusBadgeClass = bed.status === 'Available' ? 'status-available' : 'status-booked';
+
+				card.className = `bed-card ${statusClass}`;
+
+				card.innerHTML = `
+                <div class="card-header">
+                    <div>
+                        <div class="card-title">Bed ${bed.bedNo}</div>
+                        <div class="card-subtitle">${roomDisplay}</div>
+                    </div>
+                    <div class="bed-card-icon">🛌</div>
+                </div>
+                <div class="card-details">
+                    <div class="detail-row">
+                        <span class="detail-label">Sharing:</span>
+                        <span class="detail-value">${bed.sharing}-Sharing</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Price:</span>
+                        <span class="detail-value">₹${bed.price}/month</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Status:</span>
+                        <span class="status-badge ${statusBadgeClass}">${bed.status}</span>
+                    </div>
+                    ${bed.date ? `
+                    <div class="detail-row">
+                        <span class="detail-label">Added:</span>
+                        <span class="detail-value">${new Date(bed.date).toLocaleDateString()}</span>
+                    </div>
+                    ` : ''}
+                </div>
+                <div class="card-footer">
+                    <div class="card-footer-ids">
+                        <span>Bed ID: ${bed.id}</span> 
+                        <span>Room ID: ${bed.roomId}</span> 
+                    </div>
+                    <button class="delete-icon" data-bed-id="${bed.id}" data-bed-no="${bed.bedNo}" data-room-no="${roomDisplay}">✕</button>
+                </div>
+            `;
+
+				// Delete handler
+				card.querySelector('.delete-icon').addEventListener('click', async (e) => {
+					e.stopPropagation();
+					const bedId = e.currentTarget.dataset.bedId;
+					const bedNo = e.currentTarget.dataset.bedNo;
+					const roomInfo = e.currentTarget.dataset.roomNo;
+
+					if (!confirm(`Delete Bed ${bedNo} (${roomInfo})?`)) return;
+
+					try {
+						const response = await fetch(api.DELETE_BED(bedId), {method: 'DELETE'});
+						// Read the response text for error messages
+						const result = await response.text();
+
+						if (response.ok) {
+							showMessage(`Bed ${bedNo} deleted successfully`, 'success');
+							loadBeds(currentRoomId);
+						} else {
+							showMessage(`Deletion failed: ${result}`, 'error');
+						}
+					} catch (error) {
+						showMessage('Deletion failed: ' + error.message, 'error');
+						console.error('Delete Error:', error);
+					}
+				});
+
+				bedsCardsContainer.appendChild(card);
+			});
+		}
+
+		function openAddBedModal() {
+			// Reset modal state
+			addBedForm.reset();
+			capacityInfo.style.display = 'none'; // Hide capacity info (since it's server-side)
+			saveBtn.disabled = false;
+			saveBtn.textContent = 'Add Bed';
+
+			// Pre-fill room ID if viewing specific room
+			if (currentRoomId) {
+				document.getElementById('roomIdModal').value = currentRoomId;
+				document.getElementById('roomIdModal').setAttribute('readonly', true);
+				capacityInfo.style.display = 'block'; // Show capacity note
+			} else {
+				document.getElementById('roomIdModal').value = '';
+				document.getElementById('roomIdModal').removeAttribute('readonly');
+			}
+			addBedModal.style.display = 'flex';
+		}
+
+		function closeAddBedModal() {
+			addBedForm.reset();
+			addBedModal.style.display = 'none';
+			capacityInfo.style.display = 'none';
+		}
+
+		// --- Add Bed Form Submission (Relying on Server-Side Capacity Check) ---
+		addBedForm.addEventListener('submit', async (e) => {
+			e.preventDefault();
+
+			const payload = {
+				roomId: parseInt(document.getElementById('roomIdModal').value),
+				bedNo: parseInt(document.getElementById('bedNoModal').value),
+				sharing: parseInt(document.getElementById('sharingModal').value),
+				price: parseFloat(document.getElementById('priceModal').value),
+				status: document.getElementById('statusModal').value
+			};
+
+			saveBtn.disabled = true;
+			saveBtn.textContent = 'Adding...';
+
+			try {
+				const response = await fetch(api.POST_BED, {
+					method: 'POST',
+					headers: {'Content-Type': 'application/json'},
+					body: JSON.stringify(payload)
+				});
+
+				// Read the response text, as both success and error will send text/string bodies
+				const result = await response.text();
+
+				if (response.ok) {
+					// Success (HTTP 200/201)
+					showMessage('Bed added successfully!', 'success');
+					closeAddBedModal();
+					loadBeds(currentRoomId);
+				} else {
+					// Error (HTTP 400 - BedServiceException)
+					// result contains the error message from BedServiceException
+					showMessage(`Failed to add bed: ${result}`, 'error');
+				}
+			} catch (err) {
+				showMessage('Failed to add bed: ' + err.message, 'error');
+			} finally {
+				saveBtn.disabled = false;
+				saveBtn.textContent = 'Add Bed';
+				// Since we rely on the server, we don't need a final capacity check here.
+			}
+		});
+
+		// --- Event Listeners ---
+		document.getElementById('addBedBtn').addEventListener('click', openAddBedModal);
+		document.getElementById('closeAddBedModalBtn').addEventListener('click', closeAddBedModal);
+		document.getElementById('cancelBedBtn').addEventListener('click', closeAddBedModal);
+
+		// Removed the roomIdModal 'change' listener, as client-side capacity check is gone.
+
+		document.getElementById('refreshBtn').addEventListener('click', () => loadBeds(currentRoomId));
+		searchInput.addEventListener('input', () => renderBedsCards(allBedsData));
+		viewAllBedsBtn.addEventListener('click', () => {
+			// Clears URL parameters and loads all beds
+			window.location.href = 'beds.html';
+		});
+
+		// Initialize the page on load
+		initializeBedsPage();
+	</script>
+</body>
+
+</html>

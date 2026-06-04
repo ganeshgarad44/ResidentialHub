@@ -1,0 +1,921 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<title>Residential Hub — Buildings</title>
+	<style>
+		/* ... (Your original CSS is here, omitted for brevity) ... */
+
+		* {
+			margin: 0;
+			padding: 0;
+			box-sizing: border-box;
+		}
+
+		body {
+			font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+			display: flex;
+			min-height: 100vh;
+			background: #f5f7fb;
+			color: #111;
+			overflow-x: hidden;
+		}
+
+		/* --- Sidebar/Navigation --- */
+		.sidebar {
+			width: 260px;
+			background: linear-gradient(180deg, #1f2b49 0%, #2d3a5e 100%);
+			color: #fff;
+			display: flex;
+			flex-direction: column;
+			padding: 0;
+			box-shadow: 4px 0 20px rgba(0, 0, 0, 0.1);
+			position: fixed;
+			height: 100vh;
+			left: 0;
+			top: 0;
+			z-index: 100;
+		}
+
+		.project-title {
+			font-size: 22px;
+			font-weight: 700;
+			padding: 28px 24px;
+			border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+			background: rgba(0, 0, 0, 0.15);
+			letter-spacing: 0.5px;
+		}
+
+		.nav-list {
+			list-style: none;
+			padding: 16px 0;
+			margin: 0;
+			flex-grow: 1;
+		}
+
+		.nav-list-item a {
+			display: flex;
+			align-items: center;
+			gap: 12px;
+			padding: 14px 24px;
+			text-decoration: none;
+			color: #d6dde6;
+			transition: all 0.2s;
+			font-size: 15px;
+			border-left: 3px solid transparent;
+		}
+
+		.nav-list-item a:hover {
+			background: rgba(47, 111, 237, 0.15);
+			color: #fff;
+			border-left-color: #2f6fed;
+		}
+
+		.nav-list-item.active a {
+			background: rgba(47, 111, 237, 0.25);
+			color: #fff;
+			font-weight: 600;
+			border-left-color: #2f6fed;
+		}
+
+		.user-profile {
+			padding: 20px 24px;
+			border-top: 1px solid rgba(255, 255, 255, 0.1);
+			background: rgba(0, 0, 0, 0.15);
+			display: flex;
+			align-items: center;
+			gap: 12px;
+			margin-top: auto;
+		}
+
+		.user-profile-icon {
+			width: 42px;
+			height: 42px;
+			border-radius: 50%;
+			background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+			color: #fff;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			font-size: 18px;
+			cursor: pointer;
+			flex-shrink: 0;
+		}
+
+		.user-profile-text {
+			flex-grow: 1;
+		}
+
+		.user-profile-text p {
+			margin: 0;
+			font-size: 14px;
+			color: #d6dde6;
+			font-weight: 500;
+		}
+
+		.user-profile-text .muted-profile {
+			font-size: 12px;
+			color: #8892a6;
+		}
+
+		/* --- Main Content --- */
+		.main-content {
+			margin-left: 260px;
+			flex-grow: 1;
+			padding: 32px;
+			max-width: calc(100vw - 260px);
+			overflow-y: auto;
+			height: 100vh;
+		}
+
+		.main-container {
+			max-width: 1400px;
+			margin: 0 auto;
+			padding: 36px;
+			background: #fff;
+			border-radius: 12px;
+			box-shadow: 0 4px 20px rgba(18, 38, 63, 0.08);
+		}
+
+		h1 {
+			margin: 0 0 16px;
+			font-size: 18px;
+			color: #1f2b49;
+			font-weight: 600;
+			padding-bottom: 10px;
+			border-bottom: 1px solid #e8ecf2;
+		}
+
+		/* Hostel Header */
+		#hostelHeader {
+			background: linear-gradient(135deg, #e6f6ea 0%, #d1f2e0 100%);
+			padding: 10px 14px;
+			border-radius: 6px;
+			margin-bottom: 20px;
+			font-weight: 500;
+			font-size: 13px;
+			color: #1f2b49;
+			border-left: 3px solid #166534;
+		}
+
+		#hostelHeader a {
+			color: #166534;
+			text-decoration: none;
+			font-weight: 600;
+		}
+
+		#hostelHeader a:hover {
+			text-decoration: underline;
+		}
+
+		h2 {
+			margin: 24px 0 12px;
+			font-size: 16px;
+			color: #1f2b49;
+			font-weight: 600;
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			padding-bottom: 8px;
+			border-bottom: 1px solid #f0f3f7;
+		}
+
+		button {
+			padding: 8px 16px;
+			border-radius: 6px;
+			border: none;
+			cursor: pointer;
+			font-size: 14px;
+			font-weight: 600;
+			transition: all 0.2s;
+			font-family: inherit;
+			white-space: nowrap;
+		}
+
+		button.primary {
+			background: linear-gradient(135deg, #2f6fed 0%, #1e5dd8 100%);
+			color: #fff;
+			box-shadow: 0 2px 8px rgba(47, 111, 237, 0.3);
+		}
+
+		button.primary:hover {
+			transform: translateY(-1px);
+			box-shadow: 0 4px 12px rgba(47, 111, 237, 0.4);
+		}
+
+		button.primary:disabled {
+			opacity: 0.6;
+			cursor: not-allowed;
+			transform: none;
+		}
+
+		button.ghost {
+			background: #f0f3f7;
+			color: #1f2b49;
+		}
+
+		button.ghost:hover {
+			background: #e2e8f0;
+		}
+
+		button.small {
+			font-size: 13px;
+			padding: 7px 14px;
+		}
+
+		/* --- Toolbar --- */
+		.toolbar {
+			display: flex;
+			gap: 10px;
+			align-items: center;
+		}
+
+		.search-wrapper {
+			display: flex;
+			align-items: center;
+			gap: 6px;
+			padding: 7px 12px;
+			border: 1px solid #d6dde6;
+			border-radius: 6px;
+			background: #fff;
+			transition: all 0.2s;
+		}
+
+		.search-wrapper:focus-within {
+			border-color: #2f6fed;
+			box-shadow: 0 0 0 2px rgba(47, 111, 237, 0.1);
+		}
+
+		.search-wrapper input {
+			border: none;
+			outline: none;
+			padding: 0;
+			font-size: 13px;
+			width: 250px;
+			background: transparent;
+		}
+
+		.search-icon {
+			color: #8892a6;
+			font-size: 14px;
+		}
+
+		/* --- Messages --- */
+		.message {
+			padding: 10px 14px;
+			border-radius: 6px;
+			margin-bottom: 16px;
+			font-size: 13px;
+			font-weight: 500;
+			animation: slideIn 0.3s ease;
+			display: flex;
+			align-items: center;
+			gap: 8px;
+		}
+
+		.success {
+			background: #e6f6ea;
+			color: #166534;
+			border-left: 4px solid #38a169;
+		}
+
+		.error {
+			background: #fff1f2;
+			color: #9f1239;
+			border-left: 4px solid #e53e3e;
+		}
+
+		@keyframes slideIn {
+			from {
+				opacity: 0;
+				transform: translateY(-10px);
+			}
+
+			to {
+				opacity: 1;
+				transform: translateY(0);
+			}
+		}
+
+		/* --- Modal Styles --- */
+		.modal {
+			display: none;
+			position: fixed;
+			z-index: 1000;
+			left: 0;
+			top: 0;
+			width: 100%;
+			height: 100%;
+			overflow: auto;
+			background-color: rgba(0, 0, 0, 0.5);
+			justify-content: center;
+			align-items: center;
+		}
+
+		.modal-content {
+			background-color: #fefefe;
+			margin: auto;
+			padding: 30px;
+			border-radius: 12px;
+			width: 90%;
+			max-width: 450px;
+			box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+			position: relative;
+		}
+
+		.modal-content h3 {
+			margin-top: 0;
+			margin-bottom: 20px;
+			font-size: 18px;
+			border-bottom: 2px solid #e8ecf2;
+			padding-bottom: 12px;
+			color: #1f2b49;
+		}
+
+		.modal-close {
+			color: #aaa;
+			position: absolute;
+			top: 15px;
+			right: 20px;
+			font-size: 28px;
+			font-weight: bold;
+			text-decoration: none;
+			transition: color 0.2s;
+			cursor: pointer;
+		}
+
+		.modal-close:hover {
+			color: #e53e3e;
+		}
+
+		.form-row {
+			display: flex;
+			flex-direction: column;
+			align-items: flex-start;
+			margin-bottom: 16px;
+		}
+
+		.form-row label {
+			font-size: 14px;
+			color: #1f2b49;
+			font-weight: 500;
+			margin-bottom: 6px;
+		}
+
+		.form-row input {
+			width: 100%;
+			padding: 8px 12px;
+			border: 1px solid #d6dde6;
+			border-radius: 6px;
+			font-size: 14px;
+			transition: all 0.2s;
+			background: #fff;
+			font-family: inherit;
+		}
+
+		.form-row input:focus {
+			outline: none;
+			border-color: #2f6fed;
+			box-shadow: 0 0 0 2px rgba(47, 111, 237, 0.1);
+		}
+
+		.form-row input[readonly] {
+			background: #f0f3f7;
+			color: #667085;
+			cursor: not-allowed;
+		}
+
+		.button-row {
+			display: flex;
+			gap: 10px;
+			margin-top: 20px;
+			justify-content: flex-end;
+		}
+
+		/* --- Cards Grid --- */
+		#buildingCardsContainer {
+			display: grid;
+			grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+			gap: 16px;
+			margin-top: 16px;
+		}
+
+		.building-card {
+			padding: 16px;
+			border: 1px solid #e8ecf2;
+			border-left: 3px solid #166534;
+			border-radius: 8px;
+			background: #fafbfc;
+			position: relative;
+			cursor: pointer;
+			transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+		}
+
+		.building-card:hover {
+			transform: translateY(-4px);
+			border-color: #166534;
+			background: #fff;
+			box-shadow: 0 8px 24px rgba(22, 101, 52, 0.15);
+		}
+
+		.card-header {
+			display: flex;
+			justify-content: space-between;
+			align-items: start;
+			margin-bottom: 12px;
+		}
+
+		.card-icon {
+			width: 36px;
+			height: 36px;
+			border-radius: 8px;
+			background: linear-gradient(135deg, #34d399 0%, #059669 100%);
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			color: white;
+			font-size: 18px;
+			flex-shrink: 0;
+		}
+
+		.delete-icon {
+			width: 26px;
+			height: 26px;
+			background: #fff;
+			border: 1px solid #fee;
+			border-radius: 6px;
+			color: #e53e3e;
+			font-weight: bold;
+			cursor: pointer;
+			font-size: 14px;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			padding: 0;
+			transition: all 0.2s;
+			z-index: 10;
+		}
+
+		.delete-icon:hover {
+			background: #fee;
+			border-color: #e53e3e;
+			transform: scale(1.1);
+		}
+
+		.card-title {
+			font-size: 15px;
+			font-weight: 600;
+			color: #1f2b49;
+			margin-bottom: 6px;
+		}
+
+		.card-details {
+			margin-top: 10px;
+			display: flex;
+			flex-direction: column;
+			gap: 5px;
+		}
+
+		.detail-row {
+			display: flex;
+			justify-content: space-between;
+			font-size: 13px;
+		}
+
+		.detail-label {
+			color: #667085;
+			font-weight: 500;
+		}
+
+		.detail-value {
+			color: #1f2b49;
+			font-weight: 600;
+		}
+
+		.card-footer {
+			margin-top: 12px;
+			padding-top: 10px;
+			border-top: 1px solid #e8ecf2;
+			font-size: 11px;
+			color: #8892a6;
+			font-family: 'Courier New', monospace;
+		}
+
+		.muted {
+			color: #667085;
+			font-size: 13px;
+		}
+
+		.empty-state {
+			grid-column: 1 / -1;
+			padding: 40px 20px;
+			text-align: center;
+			background: #fafbfc;
+			border-radius: 8px;
+			border: 2px dashed #e2e8f0;
+		}
+
+		.empty-state-icon {
+			font-size: 48px;
+			margin-bottom: 12px;
+			opacity: 0.5;
+		}
+
+		.empty-state h3 {
+			font-size: 16px;
+			color: #2d3748;
+			margin-bottom: 6px;
+		}
+
+		.empty-state p {
+			color: #718096;
+			font-size: 13px;
+		}
+
+		/* --- Responsive --- */
+		@media (max-width: 1024px) {
+			.sidebar {
+				width: 220px;
+			}
+
+			.main-content {
+				margin-left: 220px;
+				max-width: calc(100vw - 220px);
+			}
+
+			h2 {
+				flex-direction: column;
+				align-items: flex-start;
+				gap: 12px;
+			}
+
+			.toolbar {
+				width: 100%;
+			}
+
+			.search-wrapper {
+				flex: 1;
+			}
+
+			.search-wrapper input {
+				width: 100%;
+			}
+		}
+
+		@media (max-width: 768px) {
+			.sidebar {
+				width: 70px;
+			}
+
+			.project-title,
+			.user-profile-text,
+			.nav-list-item a span:last-child {
+				display: none;
+			}
+
+			.nav-list-item a {
+				justify-content: center;
+				padding: 14px;
+			}
+
+			.user-profile {
+				justify-content: center;
+				padding: 16px;
+			}
+
+			.main-content {
+				margin-left: 70px;
+				max-width: calc(100vw - 70px);
+				padding: 16px;
+			}
+
+			.main-container {
+				padding: 24px;
+			}
+
+			h1 {
+				font-size: 16px;
+			}
+
+			#buildingCardsContainer {
+				grid-template-columns: 1fr;
+			}
+		}
+	</style>
+</head>
+
+<body>
+	<div class="sidebar">
+		<div class="project-title">🏢 Hostel Management</div>
+		<ul class="nav-list">
+			<li class="nav-list-item">
+				<a href="organisation.html">
+					<span>🏛️</span>
+					<span>Organisation</span>
+				</a>
+			</li>
+			<li class="nav-list-item">
+				<a href="hostel.html">
+					<span>🏠</span>
+					<span>Hostels</span>
+				</a>
+			</li>
+			<li class="nav-list-item active">
+				<a href="buildings.html">
+					<span>🏢</span>
+					<span>Buildings</span>
+				</a>
+			</li>
+			<li class="nav-list-item">
+				<a href="floors.html">
+					<span>📊</span>
+					<span>Floors</span>
+				</a>
+			</li>
+			<li class="nav-list-item">
+				<a href="rooms.html">
+					<span>🛏️</span>
+					<span>Rooms</span>
+				</a>
+			</li>
+			<li class="nav-list-item">
+				<a href="beds.html">
+					<span>🛌</span>
+					<span>Beds</span>
+				</a>
+			</li>
+		</ul>
+
+		<div class="user-profile">
+			<div class="user-profile-icon">👤</div>
+			<div class="user-profile-text">
+				<p>Admin User</p>
+				<p class="muted-profile">View Profile</p>
+			</div>
+		</div>
+	</div>
+
+	<div class="main-content">
+		<div class="main-container">
+			<h1>Building Management</h1>
+
+			<div id="hostelHeader"></div>
+
+			<div id="msg"></div>
+
+			<h2>
+				<span>All Buildings</span>
+				<div class="toolbar">
+					<div class="search-wrapper">
+						<span class="search-icon">🔍</span>
+						<input id="searchInput" type="text" placeholder="Search by name or warden..." />
+					</div>
+					<button id="addBuildingBtn" class="primary small">+ Add Building</button>
+					<button id="refreshBtn" class="ghost small">Refresh</button>
+				</div>
+			</h2>
+
+			<div id="buildingCardsContainer">
+				<p class="muted">Loading buildings...</p>
+			</div>
+		</div>
+	</div>
+
+	<div id="addBuildingModal" class="modal">
+		<div class="modal-content">
+			<span class="modal-close" id="closeModalBtn">&times;</span>
+			<h3>Add New Building</h3>
+			<form id="buildingForm">
+				<div class="form-row">
+					<label for="buildingName">Building Name:</label>
+					<input id="buildingName" type="text" placeholder="Enter building name" required />
+				</div>
+				<div class="form-row">
+					<label for="wardenName">Warden Name:</label>
+					<input id="wardenName" type="text" placeholder="Enter warden name" required />
+				</div>
+				<div class="form-row">
+					<label for="hostelId">Hostel ID:</label>
+					<input id="hostelId" type="number" placeholder="Enter Hostel ID or auto-set" required />
+				</div>
+				<div class="button-row">
+					<button type="button" class="ghost" id="cancelBtn">Cancel</button>
+					<button id="saveBtn" class="primary" type="submit">Add Building</button>
+				</div>
+			</form>
+		</div>
+	</div>
+
+	<script>
+		const baseUrl = window.location.origin || 'http://localhost:8080';
+		const api = {
+			list: () => fetch(baseUrl + '/buildings').then(r => r.json()),
+			add: (obj) => fetch(baseUrl + '/building', {
+				method: 'POST',
+				headers: {'Content-Type': 'application/json'},
+				body: JSON.stringify(obj)
+			}).then(r => r.text()),
+			delete: (id) => fetch(baseUrl + '/building/' + id, {method: 'DELETE'}).then(r => r.text())
+		};
+
+		const buildingForm = document.getElementById('buildingForm');
+		const msg = document.getElementById('msg');
+		const buildingCardsContainer = document.getElementById('buildingCardsContainer');
+		const searchInput = document.getElementById('searchInput');
+		const hostelIdInput = document.getElementById('hostelId');
+		const hostelHeader = document.getElementById('hostelHeader');
+		const addBuildingModal = document.getElementById('addBuildingModal');
+
+		let currentHostelId = null;
+		let allBuildings = [];
+
+		function getUrlParameter(name) {
+			const urlParams = new URLSearchParams(window.location.search);
+			return urlParams.get(name);
+		}
+
+		function initializePage() {
+			currentHostelId = getUrlParameter('hostelId');
+
+			if (currentHostelId) {
+				hostelHeader.innerHTML = `📍 Managing buildings for <strong>Hostel ID: ${currentHostelId}</strong> | <a href="hostel.html">Back to Hostels</a>`;
+			} else {
+				hostelHeader.innerHTML = `📍 Viewing <strong>All Buildings</strong> in the system.`;
+			}
+
+			loadBuildings();
+		}
+
+		function showMessage(text, type = 'success') {
+			msg.innerHTML = `<div class="message ${type}">${type === 'success' ? '✅' : '❌'} ${text}</div>`;
+			setTimeout(() => msg.innerHTML = '', 4000);
+		}
+
+		function openAddBuildingModal() {
+			if (currentHostelId) {
+				hostelIdInput.value = currentHostelId;
+				hostelIdInput.setAttribute('readonly', true);
+			} else {
+				hostelIdInput.value = '';
+				hostelIdInput.removeAttribute('readonly');
+			}
+			addBuildingModal.style.display = 'flex';
+		}
+
+		function closeAddBuildingModal() {
+			buildingForm.reset();
+			addBuildingModal.style.display = 'none';
+		}
+
+		function escapeHtml(s) {return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');}
+
+		async function loadBuildings() {
+			buildingCardsContainer.innerHTML = '<p class="muted">Loading buildings...</p>';
+			try {
+				const data = await api.list();
+				allBuildings = data || [];
+				renderCards(allBuildings);
+			} catch (err) {
+				showMessage('Failed to load buildings: ' + err.message, 'error');
+				buildingCardsContainer.innerHTML = `
+      <div class="empty-state">
+        <div class="empty-state-icon">⚠️</div>
+        <h3>Connection Error</h3>
+        <p>Could not connect to the server.</p>
+      </div>
+    `;
+			}
+		}
+
+		function renderCards(list) {
+			buildingCardsContainer.innerHTML = '';
+
+			let displayList = list;
+			if (currentHostelId) {
+				// Filter now uses b.hostelId instead of b.hostel.id
+				displayList = list.filter(b => b.hostelId && b.hostelId == currentHostelId);
+			}
+
+			if (!Array.isArray(displayList) || displayList.length === 0) {
+				buildingCardsContainer.innerHTML = `
+      <div class="empty-state">
+        <div class="empty-state-icon">🏢</div>
+        <h3>No buildings found</h3>
+        <p>${currentHostelId ? `No buildings for Hostel ID: ${currentHostelId}` : 'Click "+ Add Building" to create your first one'}</p>
+      </div>
+    `;
+				return;
+			}
+
+			const q = (searchInput.value || '').toLowerCase();
+			const filtered = displayList.filter(b => !q ||
+				(b.name && b.name.toLowerCase().includes(q)) ||
+				(b.warden && b.warden.toLowerCase().includes(q))
+			);
+
+			if (filtered.length === 0) {
+				buildingCardsContainer.innerHTML = `
+      <div class="empty-state">
+        <div class="empty-state-icon">🔍</div>
+        <h3>No matches found</h3>
+        <p>Try a different search term</p>
+      </div>
+    `;
+				return;
+			}
+
+			filtered.forEach(b => {
+				const card = document.createElement('div');
+				card.className = 'building-card';
+				card.dataset.buildingId = b.id;
+
+				// b.totalFloors is now missing from the DTO, so I've removed that row
+				// If your API can provide totalFloors, please ensure it's in the DTO
+
+				card.innerHTML = `
+      <div class="card-header">
+        <div class="card-icon">🏢</div>
+        <button class="delete-icon" data-building-id="${b.id}" title="Delete">
+          ✕
+        </button>
+      </div>
+      <h3 class="card-title">${escapeHtml(b.name ?? 'N/A')}</h3>
+      <div class="card-details">
+        <div class="detail-row">
+          <span class="detail-label">Warden:</span>
+          <span class="detail-value">${escapeHtml(b.warden ?? 'N/A')}</span>
+        </div>
+        </div>
+      <div class="card-footer">
+        Hostel ID: ${b.hostelId ?? 'N/A'} | Building ID: ${b.id ?? 'N/A'}
+      </div>
+    `;
+
+				card.addEventListener('click', (e) => {
+					if (e.target.classList.contains('delete-icon') || e.target.closest('.delete-icon')) return;
+					window.location.href = 'floors.html?buildingId=' + b.id;
+				});
+
+				card.querySelector('.delete-icon').addEventListener('click', async (e) => {
+					e.stopPropagation();
+					const buildingId = e.currentTarget.dataset.buildingId;
+
+					if (!confirm('Are you sure you want to delete this building? This will also remove all associated floors and rooms.')) return;
+
+					try {
+						await api.delete(buildingId);
+						showMessage('Building deleted successfully!');
+						loadBuildings();
+					} catch (err) {
+						showMessage('Delete failed: ' + err.message, 'error');
+					}
+				});
+
+				buildingCardsContainer.appendChild(card);
+			});
+		}
+
+		buildingForm.addEventListener('submit', async (e) => {
+			e.preventDefault();
+
+			const payload = {
+				name: document.getElementById('buildingName').value.trim(),
+				warden: document.getElementById('wardenName').value.trim(),
+				hostelId: parseInt(hostelIdInput.value, 10)
+			};
+
+			if (!payload.name || !payload.warden || isNaN(payload.hostelId)) {
+				showMessage('Please fill all required fields correctly', 'error');
+				return;
+			}
+
+			const saveBtn = document.getElementById('saveBtn');
+			saveBtn.disabled = true;
+			saveBtn.textContent = 'Adding...';
+
+			try {
+				await api.add(payload);
+				showMessage('Building added successfully!');
+				closeAddBuildingModal();
+				loadBuildings();
+			} catch (err) {
+				showMessage('Save failed: ' + err.message, 'error');
+			} finally {
+				saveBtn.disabled = false;
+				saveBtn.textContent = 'Add Building';
+			}
+		});
+
+		document.getElementById('addBuildingBtn').addEventListener('click', openAddBuildingModal);
+		document.getElementById('closeModalBtn').addEventListener('click', closeAddBuildingModal);
+		document.getElementById('cancelBtn').addEventListener('click', closeAddBuildingModal);
+		document.getElementById('refreshBtn').addEventListener('click', loadBuildings);
+		searchInput.addEventListener('input', () => renderCards(allBuildings));
+
+		initializePage(); 
+	</script>
+</body>
+
+</html>

@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Residential Hub - Authentication</title>
+	<style>
+		:root {
+			--primary: #2f6fed;
+			--primary-dark: #1e5dd8;
+			--text-main: #1f2b49;
+			--text-muted: #667085;
+			--bg-light: #f5f7fb;
+			--card-border: #e8ecf2;
+		}
+
+		* {
+			margin: 0;
+			padding: 0;
+			box-sizing: border-box;
+			font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+		}
+
+		body {
+			background: var(--bg-light);
+			color: var(--text-main);
+			display: flex;
+			flex-direction: column;
+			min-height: 100vh;
+		}
+
+		header {
+			background: #fff;
+			box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+		}
+
+		.nav-container {
+			max-width: 1200px;
+			margin: 0 auto;
+			padding: 16px 24px;
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+		}
+
+		.logo {
+			font-size: 20px;
+			font-weight: 700;
+			text-decoration: none;
+			color: var(--text-main);
+		}
+
+		.auth-container {
+			max-width: 500px;
+			width: 100%;
+			margin: 60px auto;
+			padding: 30px;
+			background: #fff;
+			border-radius: 12px;
+			box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+			border: 1px solid var(--card-border);
+		}
+
+		.auth-toggle {
+			display: flex;
+			border-bottom: 2px solid var(--card-border);
+			margin-bottom: 24px;
+		}
+
+		.toggle-btn {
+			flex: 1;
+			padding: 12px;
+			text-align: center;
+			font-weight: 600;
+			cursor: pointer;
+			color: var(--text-muted);
+			transition: all 0.2s;
+		}
+
+		.toggle-btn.active {
+			color: var(--primary);
+			border-bottom: 3px solid var(--primary);
+			margin-bottom: -2px;
+		}
+
+		.form-panel {
+			display: none;
+		}
+
+		.form-panel.active {
+			display: block;
+		}
+
+		.form-group {
+			display: flex;
+			flex-direction: column;
+			margin-bottom: 16px;
+		}
+
+		.form-group label {
+			font-size: 13px;
+			font-weight: 600;
+			margin-bottom: 6px;
+		}
+
+		.form-group input,
+		.form-group select,
+		.form-group textarea {
+			padding: 10px;
+			border: 1px solid #d6dde6;
+			border-radius: 6px;
+			font-size: 14px;
+			outline: none;
+		}
+
+		.form-group input:focus,
+		.form-group select:focus {
+			border-color: var(--primary);
+		}
+
+		.form-grid {
+			display: grid;
+			grid-template-columns: 1fr 1fr;
+			gap: 12px;
+		}
+
+		.full-width {
+			grid-column: 1 / -1;
+		}
+
+		button.submit-btn {
+			width: 100%;
+			padding: 12px;
+			background: var(--primary);
+			color: #fff;
+			border: none;
+			border-radius: 6px;
+			font-weight: 600;
+			font-size: 15px;
+			cursor: pointer;
+			margin-top: 10px;
+		}
+
+		button.submit-btn:hover {
+			background: var(--primary-dark);
+		}
+
+		.alert {
+			padding: 12px;
+			border-radius: 6px;
+			margin-bottom: 16px;
+			font-size: 14px;
+			display: none;
+		}
+
+		.alert.error {
+			background: #fff1f2;
+			color: #9f1239;
+			border-left: 4px solid #e53e3e;
+		}
+
+		.alert.success {
+			background: #e6f6ea;
+			color: #166534;
+			border-left: 4px solid #38a169;
+		}
+	</style>
+</head>
+
+<body>
+
+	<header>
+		<div class="nav-container">
+			<a href="index.html" class="logo">🏢 Residential Hub</a>
+		</div>
+	</header>
+
+	<div class="auth-container">
+		<div class="auth-toggle">
+			<div class="toggle-btn active" id="tabLogin" onclick="showPanel('login')">Account Login</div>
+			<div class="toggle-btn" id="tabSignup" onclick="showPanel('signup')">New Registration</div>
+		</div>
+
+		<div id="alertBox" class="alert"></div>
+
+		<div id="loginPanel" class="form-panel active">
+			<form id="loginForm">
+				<div class="form-group">
+					<label>Registered Email Address</label>
+					<input type="email" id="loginEmail" required placeholder="name@domain.com">
+				</div>
+				<div class="form-group">
+					<label>Password (Your Mobile Number)</label>
+					<input type="password" id="loginPassword" required placeholder="Enter 10-digit mobile number">
+				</div>
+				<button type="submit" class="submit-btn">Login to Dashboard</button>
+			</form>
+		</div>
+
+		<div id="signupPanel" class="form-panel">
+			<form id="signupForm">
+				<div class="form-grid">
+					<div class="form-group"><label>Full Name</label><input id="signName" type="text" required></div>
+					<div class="form-group"><label>Email Address</label><input id="signEmail" type="email" required>
+					</div>
+					<div class="form-group"><label>Mobile Number (Password)</label><input id="signMobile" type="number"
+							required></div>
+					<div class="form-group"><label>Date of Birth</label><input id="signDob" type="date" required></div>
+					<div class="form-group">
+						<label>Gender</label>
+						<select id="signGender" required>
+							<option value="" disabled selected>Select</option>
+							<option value="Male">Male</option>
+							<option value="Female">Female</option>
+						</select>
+					</div>
+					<div class="form-group"><label>Aadhaar Number</label><input id="signAdhar" type="number" required>
+					</div>
+					<div class="form-group"><label>Education</label><input id="signEducation" type="text" required>
+					</div>
+					<div class="form-group"><label>Profession</label><input id="signProfession" type="text" required>
+					</div>
+					<div class="form-group">
+						<label>Marital Status</label>
+						<select id="signMarried" required>
+							<option value="" disabled selected>Select</option>
+							<option value="Single">Single</option>
+							<option value="Married">Married</option>
+						</select>
+					</div>
+					<div class="form-group"><label>Parent Name</label><input id="signParentName" type="text" required>
+					</div>
+					<div class="form-group"><label>Parent Mobile</label><input id="signParentMobile" type="number"
+							required></div>
+					<div class="form-group full-width"><label>Current Address</label><textarea id="signCurrentAddress"
+							rows="2" required></textarea></div>
+					<div class="form-group full-width"><label>Permanent Address</label><textarea
+							id="signPermanentAddress" rows="2" required></textarea></div>
+				</div>
+				<button type="submit" class="submit-btn">Register Account</button>
+			</form>
+		</div>
+	</div>
+
+	<script>
+		const baseUrl = window.location.origin;
+		const alertBox = document.getElementById('alertBox');
+
+		function showAlert(msg, isSuccess = false) {
+			alertBox.textContent = msg;
+			alertBox.className = `alert ${isSuccess ? 'success' : 'error'}`;
+			alertBox.style.display = 'block';
+		}
+
+		function showPanel(panelType) {
+			alertBox.style.display = 'none';
+			if (panelType === 'login') {
+				document.getElementById('loginPanel').classList.add('active');
+				document.getElementById('signupPanel').classList.remove('active');
+				document.getElementById('tabLogin').classList.add('active');
+				document.getElementById('tabSignup').classList.remove('active');
+			} else {
+				document.getElementById('signupPanel').classList.add('active');
+				document.getElementById('loginPanel').classList.remove('active');
+				document.getElementById('tabSignup').classList.add('active');
+				document.getElementById('tabLogin').classList.remove('active');
+			}
+		}
+
+		// HANDLES LOGIN LOGIC
+		document.getElementById('loginForm').addEventListener('submit', async (e) => {
+			e.preventDefault();
+			const email = document.getElementById('loginEmail').value.trim();
+			const password = document.getElementById('loginPassword').value.trim();
+
+			try {
+				const response = await fetch(`${baseUrl}/login`, {
+					method: 'POST',
+					headers: {'Content-Type': 'application/json'},
+					body: JSON.stringify({email, password})
+				});
+
+				if (response.ok) {
+					const userProfile = await response.json();
+					// SAVE PROFILE DATA AS THE CONDITIONAL FRONTEnd SESSION TRACKER
+					localStorage.setItem('currentUser', JSON.stringify(userProfile));
+					showAlert("Authentication successful! Redirecting...", true);
+					setTimeout(() => window.location.href = 'dashboard.html', 1500);
+				} else {
+					const errorMsg = await response.text();
+					showAlert(errorMsg || "Invalid credentials provided.");
+				}
+			} catch (err) {
+				showAlert("Network connectivity error processing request.");
+			}
+		});
+
+		// HANDLES SIGNUP LOGIC
+		document.getElementById('signupForm').addEventListener('submit', async (e) => {
+			e.preventDefault();
+			const payload = {
+				name: document.getElementById('signName').value.trim(),
+				currentAddress: document.getElementById('signCurrentAddress').value.trim(),
+				permanantAddress: document.getElementById('signPermanentAddress').value.trim(),
+				dateOfBirth: document.getElementById('signDob').value || null,
+				email: document.getElementById('signEmail').value.trim(),
+				mobileNo: parseInt(document.getElementById('signMobile').value, 10) || 0,
+				education: document.getElementById('signEducation').value.trim(),
+				adharNo: parseInt(document.getElementById('signAdhar').value, 10) || 0,
+				parentName: document.getElementById('signParentName').value.trim(),
+				parentMobileNo: parseInt(document.getElementById('signParentMobile').value, 10) || 0,
+				gender: document.getElementById('signGender').value,
+				profession: document.getElementById('signProfession').value.trim(),
+				married: document.getElementById('signMarried').value || null
+			};
+
+			try {
+				const response = await fetch(`${baseUrl}/signup`, {
+					method: 'POST',
+					headers: {'Content-Type': 'application/json'},
+					body: JSON.stringify(payload)
+				});
+
+				if (response.ok || response.status === 201) {
+					showAlert("Account registration completed! Please login now.", true);
+					document.getElementById('signupForm').reset();
+					setTimeout(() => showPanel('login'), 2000);
+				} else {
+					const msg = await response.text();
+					showAlert(msg || "Validation error handling data fields.");
+				}
+			} catch (err) {
+				showAlert("Network execution failure during registration.");
+			}
+		});
+	</script>
+</body>
+
+</html>

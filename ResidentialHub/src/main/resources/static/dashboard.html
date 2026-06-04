@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Residential Hub - My Dashboard</title>
+	<style>
+		:root {
+			--primary: #2f6fed;
+			--primary-dark: #1e5dd8;
+			--text-main: #1f2b49;
+			--text-muted: #667085;
+			--bg-light: #f5f7fb;
+			--card-border: #e8ecf2;
+		}
+
+		* {
+			margin: 0;
+			padding: 0;
+			box-sizing: border-box;
+			font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+		}
+
+		body {
+			background: var(--bg-light);
+			color: var(--text-main);
+			padding-bottom: 60px;
+		}
+
+		header {
+			background: #fff;
+			box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+		}
+
+		.nav-container {
+			max-width: 1200px;
+			margin: 0 auto;
+			padding: 16px 24px;
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+		}
+
+		.logo {
+			font-size: 20px;
+			font-weight: 700;
+			text-decoration: none;
+			color: var(--text-main);
+		}
+
+		.logout-btn {
+			background: #fff1f2;
+			color: #e53e3e;
+			border: 1px solid #fecdd3;
+			padding: 8px 16px;
+			border-radius: 6px;
+			cursor: pointer;
+			font-weight: 600;
+		}
+
+		.main-wrapper {
+			max-width: 900px;
+			margin: 40px auto;
+			padding: 0 20px;
+		}
+
+		.dashboard-header {
+			background: linear-gradient(135deg, #1f2b49 0%, #2d3a5e 100%);
+			color: #fff;
+			padding: 30px;
+			border-radius: 12px;
+			margin-bottom: 30px;
+		}
+
+		.profile-card {
+			background: #fff;
+			border: 1px solid var(--card-border);
+			border-radius: 12px;
+			padding: 30px;
+			box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+		}
+
+		.profile-card h3 {
+			margin-bottom: 20px;
+			border-bottom: 2px solid var(--bg-light);
+			padding-bottom: 10px;
+		}
+
+		.form-grid {
+			display: grid;
+			grid-template-columns: 1fr 1fr;
+			gap: 20px;
+		}
+
+		.full-width {
+			grid-column: 1 / -1;
+		}
+
+		.form-group {
+			display: flex;
+			flex-direction: column;
+		}
+
+		.form-group label {
+			font-size: 13px;
+			font-weight: 600;
+			margin-bottom: 6px;
+			color: var(--text-muted);
+		}
+
+		.form-group input,
+		.form-group select,
+		.form-group textarea {
+			padding: 10px;
+			border: 1px solid #d6dde6;
+			border-radius: 6px;
+			font-size: 14px;
+			background: #fff;
+			color: var(--text-main);
+		}
+
+		.action-bar {
+			margin-top: 30px;
+			display: flex;
+			justify-content: flex-end;
+			gap: 12px;
+		}
+
+		.btn {
+			padding: 12px 24px;
+			border-radius: 6px;
+			font-weight: 600;
+			cursor: pointer;
+			border: none;
+		}
+
+		.btn.primary {
+			background: var(--primary);
+			color: #fff;
+		}
+
+		.btn.ghost {
+			background: var(--bg-light);
+			color: var(--text-main);
+		}
+
+		.bookings-card {
+			background: #fff;
+			border: 1px solid var(--card-border);
+			border-radius: 12px;
+			padding: 30px;
+			box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+			margin-top: 30px;
+		}
+
+		.bookings-card h3 {
+			margin-bottom: 20px;
+			border-bottom: 2px solid var(--bg-light);
+			padding-bottom: 10px;
+		}
+
+		.bookings-table {
+			width: 100%;
+			border-collapse: collapse;
+		}
+
+		.bookings-table th {
+			text-align: left;
+			font-size: 11px;
+			text-transform: uppercase;
+			color: var(--text-muted);
+			font-weight: 700;
+			padding: 10px 12px;
+			border-bottom: 2px solid var(--card-border);
+		}
+
+		.bookings-table td {
+			padding: 12px;
+			font-size: 14px;
+			border-bottom: 1px solid var(--bg-light);
+		}
+
+		.status-badge {
+			display: inline-block;
+			padding: 4px 10px;
+			border-radius: 4px;
+			font-size: 12px;
+			font-weight: 600;
+		}
+
+		.status-badge.pending {
+			background: #fef3c7;
+			color: #92400e;
+		}
+
+		.status-badge.confirmed {
+			background: #d1fae5;
+			color: #065f46;
+		}
+
+		.status-badge.paid {
+			background: #d1fae5;
+			color: #065f46;
+		}
+
+		.status-badge.unpaid {
+			background: #fee2e2;
+			color: #991b1b;
+		}
+
+		.no-bookings {
+			text-align: center;
+			padding: 30px;
+			color: var(--text-muted);
+		}
+
+		#msgBox {
+			padding: 12px;
+			border-radius: 6px;
+			margin-bottom: 20px;
+			font-size: 14px;
+			display: none;
+			text-align: center;
+		}
+
+		#msgBox.success {
+			background: #e6f6ea;
+			color: #166534;
+		}
+
+		#msgBox.error {
+			background: #fff1f2;
+			color: #9f1239;
+		}
+	</style>
+</head>
+
+<body>
+
+	<header>
+		<div class="nav-container">
+			<a href="index.html" class="logo">🏢 Residential Hub</a>
+			<div style="display: flex; align-items: center; gap: 12px;">
+				<a href="index.html" style="font-size: 14px; font-weight: 600; color: var(--primary); text-decoration: none; padding: 8px 16px; border: 1px solid var(--primary); border-radius: 6px;">← Back to Home</a>
+				<button class="logout-btn" onclick="handleLogout()">Logout</button>
+			</div>
+		</div>
+	</header>
+
+	<div class="main-wrapper">
+		<div class="dashboard-header">
+			<h1 id="welcomeUser">Welcome, Resident!</h1>
+			<p style="color: #cbd5e1; margin-top: 4px;">Manage your profile context metrics and track assigned
+				accommodation assets seamlessly.</p>
+		</div>
+
+		<div id="msgBox"></div>
+
+		<div class="profile-card">
+			<h3>My Personal Information Records</h3>
+			<form id="editProfileForm">
+				<div class="form-grid">
+					<div class="form-group"><label>Full Name</label><input id="dashName" type="text" required></div>
+					<div class="form-group"><label>Email Address</label><input id="dashEmail" type="email" required>
+					</div>
+					<div class="form-group"><label>Mobile Number</label><input id="dashMobile" type="number" required>
+					</div>
+					<div class="form-group"><label>Date of Birth</label><input id="dashDob" type="date" required></div>
+					<div class="form-group">
+						<label>Gender</label>
+						<select id="dashGender" required>
+							<option value="Male">Male</option>
+							<option value="Female">Female</option>
+						</select>
+					</div>
+					<div class="form-group"><label>Aadhaar Number (Read Only)</label><input id="dashAdhar" type="number"
+							readonly style="background: #f1f5f9; color: #94a3b8;"></div>
+					<div class="form-group"><label>Education</label><input id="dashEducation" type="text" required>
+					</div>
+					<div class="form-group"><label>Profession</label><input id="dashProfession" type="text" required>
+					</div>
+					<div class="form-group">
+						<label>Marital Status</label>
+						<select id="dashMarried" required>
+							<option value="Single">Single</option>
+							<option value="Married">Married</option>
+						</select>
+					</div>
+					<div class="form-group"><label>Parent Name</label><input id="dashParentName" type="text" required>
+					</div>
+					<div class="form-group"><label>Parent Mobile</label><input id="dashParentMobile" type="number"
+							required></div>
+					<div class="form-group full-width"><label>Current Residential Address</label><textarea
+							id="dashCurrentAddress" rows="2" required></textarea></div>
+					<div class="form-group full-width"><label>Permanent Address</label><textarea
+							id="dashPermanentAddress" rows="2" required></textarea></div>
+				</div>
+				<div class="action-bar">
+					<button type="submit" class="btn primary">Save Updated Profile</button>
+				</div>
+			</form>
+		</div>
+
+		<div class="bookings-card">
+			<h3>My Bookings</h3>
+			<div id="bookingsContent">
+				<p class="no-bookings">Loading bookings...</p>
+			</div>
+		</div>
+	</div>
+
+	<script>
+		const baseUrl = window.location.origin;
+		let loggedInUser = null;
+
+		// CONDITIONAL STATEMENT VERIFICATION ON INGESTION
+		document.addEventListener('DOMContentLoaded', () => {
+			const sessionData = localStorage.getItem('currentUser');
+
+			if (!sessionData) {
+				// If user is missing from local context storage, reject routing entirely
+				alert("Access Denied! Please authentication check first.");
+				window.location.href = 'login.html';
+				return;
+			}
+
+			loggedInUser = JSON.parse(sessionData);
+			document.getElementById('welcomeUser').textContent = `Welcome, ${loggedInUser.name}!`;
+			populateFormFields(loggedInUser);
+			loadUserBookings(loggedInUser.userId);
+		});
+
+		function populateFormFields(user) {
+			document.getElementById('dashName').value = user.name || '';
+			document.getElementById('dashEmail').value = user.email || '';
+			document.getElementById('dashMobile').value = user.mobileNo || '';
+			document.getElementById('dashDob').value = user.dateOfBirth || '';
+			document.getElementById('dashGender').value = user.gender || 'Male';
+			document.getElementById('dashAdhar').value = user.adharNo || '';
+			document.getElementById('dashEducation').value = user.education || '';
+			document.getElementById('dashProfession').value = user.profession || '';
+			document.getElementById('dashMarried').value = user.married || 'Single';
+			document.getElementById('dashParentName').value = user.parentName || '';
+			document.getElementById('dashParentMobile').value = user.parentMobileNo || '';
+			document.getElementById('dashCurrentAddress').value = user.currentAddress || '';
+			document.getElementById('dashPermanentAddress').value = user.permanantAddress || '';
+		}
+
+		// DISPATCHES MODIFICATIONS UPSTREAM DYNAMICALLY
+		document.getElementById('editProfileForm').addEventListener('submit', async (e) => {
+			e.preventDefault();
+			const msgBox = document.getElementById('msgBox');
+
+			const updatedPayload = {
+				name: document.getElementById('dashName').value.trim(),
+				currentAddress: document.getElementById('dashCurrentAddress').value.trim(),
+				permanantAddress: document.getElementById('dashPermanentAddress').value.trim(),
+				dateOfBirth: document.getElementById('dashDob').value,
+				email: document.getElementById('dashEmail').value.trim(),
+				mobileNo: parseInt(document.getElementById('dashMobile').value, 10),
+				education: document.getElementById('dashEducation').value.trim(),
+				adharNo: parseInt(document.getElementById('dashAdhar').value, 10),
+				parentName: document.getElementById('dashParentName').value.trim(),
+				parentMobileNo: parseInt(document.getElementById('dashParentMobile').value, 10),
+				gender: document.getElementById('dashGender').value,
+				profession: document.getElementById('dashProfession').value.trim(),
+				married: document.getElementById('dashMarried').value
+			};
+
+			try {
+				const response = await fetch(`${baseUrl}/update/${loggedInUser.userId}`, {
+					method: 'PUT',
+					headers: {'Content-Type': 'application/json'},
+					body: JSON.stringify(updatedPayload)
+				});
+
+				if (response.ok) {
+					// Update current local instance records mirror state to keep values stable across views
+					Object.assign(loggedInUser, updatedPayload);
+					localStorage.setItem('currentUser', JSON.stringify(loggedInUser));
+
+					msgBox.textContent = "Profile information updated successfully!";
+					msgBox.className = "success";
+					msgBox.style.display = "block";
+				} else {
+					const txt = await response.text();
+					msgBox.textContent = txt || "Failed to update profile details.";
+					msgBox.className = "error";
+					msgBox.style.display = "block";
+				}
+			} catch (err) {
+				msgBox.textContent = "Network runtime exception updating server variables.";
+				msgBox.className = "error";
+				msgBox.style.display = "block";
+			}
+
+			setTimeout(() => msgBox.style.display = 'none', 4000);
+		});
+
+		async function loadUserBookings(userId) {
+			const container = document.getElementById('bookingsContent');
+			try {
+				const response = await fetch(`${baseUrl}/bookings/user/${userId}`);
+				if (!response.ok) throw new Error();
+				const bookings = await response.json();
+
+				if (!bookings || bookings.length === 0) {
+					container.innerHTML = '<p class="no-bookings">You have no bookings yet.</p>';
+					return;
+				}
+
+				let html = `<table class="bookings-table">
+					<thead><tr>
+						<th>Booking ID</th>
+						<th>Date</th>
+						<th>Bed ID</th>
+						<th>Status</th>
+						<th>Payment</th>
+					</tr></thead><tbody>`;
+
+				bookings.forEach(b => {
+					const statusClass = b.status && b.status.toLowerCase() === 'confirmed' ? 'confirmed' : 'pending';
+					const payClass = b.paymentStatus && b.paymentStatus.toLowerCase() === 'paid' ? 'paid' : 'unpaid';
+					html += `<tr>
+						<td>#${b.bookingId}</td>
+						<td>${b.date || 'N/A'}</td>
+						<td>${b.bedId}</td>
+						<td><span class="status-badge ${statusClass}">${b.status}</span></td>
+						<td><span class="status-badge ${payClass}">${b.paymentStatus}</span></td>
+					</tr>`;
+				});
+
+				html += '</tbody></table>';
+				container.innerHTML = html;
+			} catch (err) {
+				container.innerHTML = '<p class="no-bookings">Failed to load bookings.</p>';
+			}
+		}
+
+		function handleLogout() {
+			localStorage.removeItem('currentUser');
+			window.location.href = 'index.html';
+		}
+	</script>
+</body>
+
+</html>
